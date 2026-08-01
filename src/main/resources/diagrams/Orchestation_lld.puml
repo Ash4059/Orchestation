@@ -83,7 +83,6 @@ package "Orchestra-Core Monolith (Phase 1)" {
 
         enum TaskState {
             BACKLOG
-            TODO
             IN_PROGRESS
             CODE_REVIEW
             BLOCKED
