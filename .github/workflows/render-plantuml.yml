@@ -1,0 +1,43 @@
+name: Render PlantUML Diagrams
+
+on:
+  push:
+    paths:
+      - '**/*.puml'
+  workflow_dispatch:
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Create Output Directory
+        run: mkdir -p docs/images
+
+      - name: Render PlantUML to PNG and SVG
+        uses: cloudbees/plantuml-github-action@master
+        with:
+          args: -v -tpng -tsvg -o "./docs/images" "**/*.puml"
+
+      - name: Check for Changes
+        id: git-check
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@://github.com"
+          git add docs/images/
+          if git diff --staged --quiet; then
+            echo "changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "changes=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and Push Diagrams
+        if: steps:git-check.outputs.changes == 'true'
+        run: |
+          git commit -m "chore: auto-render plantuml diagrams [skip ci]"
+          git push
