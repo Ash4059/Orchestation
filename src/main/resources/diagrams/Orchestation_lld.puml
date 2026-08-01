@@ -1,0 +1,109 @@
+@startuml Orchestra_Core_Phase1_LLD
+
+skinparam componentStyle uml2
+skinparam Monochrome false
+skinparam Shadowing true
+skinparam packageStyle Frame
+
+package "Orchestra-Core Monolith (Phase 1)" {
+
+    package "Presentation Layer (Controllers)" {
+        class WorkspaceController {
+            + createWorkspace(CreateWorkspaceRequest): ResponseEntity<WorkspaceResponse>
+            + getWorkspaceById(UUID): ResponseEntity<WorkspaceResponse>
+            + updateWorkspace(UUID, UpdateWorkspaceRequest): ResponseEntity<WorkspaceResponse>
+            + deleteWorkspace(UUID): ResponseEntity<Void>
+        }
+
+        class TeamController {
+            + createTeam(UUID, CreateTeamRequest): ResponseEntity<TeamResponse>
+            + addMemberToTeam(UUID, AddMemberRequest): ResponseEntity<TeamResponse>
+        }
+
+        class TaskController {
+            + createTask(UUID, CreateTaskRequest): ResponseEntity<TaskResponse>
+            + updateTaskStatus(UUID, TaskStatus): ResponseEntity<TaskResponse>
+        }
+    }
+
+    package "DTO Layer (Request / Response Wrappers)" {
+        class CreateWorkspaceRequest {
+            - name: String @NotBlank
+            - description: String
+            - ownerId: UUID @NotNull
+        }
+        class WorkspaceResponse {
+            - id: UUID
+            - name: String
+            - description: String
+            - teamsCount: int
+            - createdAt: LocalDateTime
+        }
+    }
+
+    package "Service Layer (Business Rules & Transactions)" {
+        interface WorkspaceService {
+            + createWorkspace(CreateWorkspaceRequest): WorkspaceResponse
+            + getWorkspaceById(UUID): WorkspaceResponse
+        }
+        
+        class WorkspaceServiceImpl implements WorkspaceService {
+            - workspaceRepository: WorkspaceRepository
+            - userRepository: UserRepository
+            - workspaceMapper: WorkspaceMapper
+            + @Transactional createWorkspace(req): WorkspaceResponse
+        }
+    }
+
+    package "Domain Persistence Layer (JPA Entities)" {
+        class WorkspaceEntity {
+            - id: UUID @Id
+            - name: String
+            - description: String
+            - teams: List<TeamEntity> @OneToMany
+            - createdAt: LocalDateTime
+            - updatedAt: LocalDateTime
+        }
+
+        class TeamEntity {
+            - id: UUID @Id
+            - teamName: String
+            - workspace: WorkspaceEntity @ManyToOne
+            - members: Set<UserEntity> @ManyToMany
+            - tasks: List<TaskEntity> @OneToMany
+        }
+
+        class TaskEntity {
+            - id: UUID @Id
+            - title: String
+            - storyPoints: Integer
+            - state: TaskState
+            - team: TeamEntity @ManyToOne
+        }
+
+        enum TaskState {
+            BACKLOG
+            TODO
+            IN_PROGRESS
+            CODE_REVIEW
+            BLOCKED
+            DONE
+        }
+    }
+
+    package "Data Access Layer (Spring Data Repositories)" {
+        interface WorkspaceRepository {
+            + findByName(String): Optional<WorkspaceEntity>
+            + findWorkspaceWithTeamsAndMembersById(UUID): Optional<WorkspaceEntity>
+        }
+    }
+}
+
+WorkspaceController --> WorkspaceService
+WorkspaceServiceImpl --> WorkspaceRepository
+WorkspaceServiceImpl --> WorkspaceEntity
+WorkspaceEntity "1" *-- "0..*" TeamEntity : @OneToMany (Cascade.ALL)
+TeamEntity "1" *-- "0..*" TaskEntity : @OneToMany
+TaskEntity --> TaskState
+
+@enduml
