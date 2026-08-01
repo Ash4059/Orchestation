@@ -3,7 +3,7 @@ name: Render PlantUML Diagrams
 on:
   push:
     paths:
-      - '**/*.puml'
+      - 'docs/images/**/*.puml'
   workflow_dispatch:
 
 jobs:
@@ -16,13 +16,10 @@ jobs:
       - name: Checkout Source Code
         uses: actions/checkout@v4
 
-      - name: Create Output Directory
-        run: mkdir -p docs/images
-
       - name: Render PlantUML to PNG and SVG
         uses: cloudbees/plantuml-github-action@master
         with:
-          args: -v -tpng -tsvg -o "./docs/images" "**/*.puml"
+          args: -v -tpng -tsvg "docs/images/**/*.puml"
 
       - name: Check for Changes
         id: git-check
@@ -37,7 +34,7 @@ jobs:
           fi
 
       - name: Commit and Push Diagrams
-        if: steps:git-check.outputs.changes == 'true'
+        if: steps.git-check.outputs.changes == 'true'
         run: |
           git commit -m "chore: auto-render plantuml diagrams [skip ci]"
           git push
