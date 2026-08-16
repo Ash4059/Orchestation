@@ -3,7 +3,7 @@ name: Render PlantUML Diagrams
 on:
   push:
     paths:
-      - 'docs/images/**/*.puml'
+      - 'docs/image/**/*.puml'
   workflow_dispatch:
 
 jobs:
@@ -19,7 +19,7 @@ jobs:
       - name: Render PlantUML to PNG and SVG
         uses: cloudbees/plantuml-github-action@master
         with:
-          args: -v -tpng -tsvg "docs/images/**/*.puml"
+          args: -v -tpng -tsvg "docs/image/**/*.puml"
 
       - name: Check for Changes
         id: git-check
