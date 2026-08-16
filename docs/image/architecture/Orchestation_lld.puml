@@ -10,19 +10,19 @@ package "Orchestra-Core Monolith (Phase 1)" {
     package "Presentation Layer (Controllers)" {
         class WorkspaceController {
             + createWorkspace(CreateWorkspaceRequest): ResponseEntity<WorkspaceResponse>
-            + getWorkspaceById(UUID): ResponseEntity<WorkspaceResponse>
-            + updateWorkspace(UUID, UpdateWorkspaceRequest): ResponseEntity<WorkspaceResponse>
-            + deleteWorkspace(UUID): ResponseEntity<Void>
+            + getWorkspaceById(Long): ResponseEntity<WorkspaceResponse>
+            + updateWorkspace(Long, UpdateWorkspaceRequest): ResponseEntity<WorkspaceResponse>
+            + deleteWorkspace(Long): ResponseEntity<Void>
         }
 
         class TeamController {
-            + createTeam(UUID, CreateTeamRequest): ResponseEntity<TeamResponse>
-            + addMemberToTeam(UUID, AddMemberRequest): ResponseEntity<TeamResponse>
+            + createTeam(Long, CreateTeamRequest): ResponseEntity<TeamResponse>
+            + addMemberToTeam(Long, AddMemberRequest): ResponseEntity<TeamResponse>
         }
 
         class TaskController {
-            + createTask(UUID, CreateTaskRequest): ResponseEntity<TaskResponse>
-            + updateTaskStatus(UUID, TaskStatus): ResponseEntity<TaskResponse>
+            + createTask(Long, CreateTaskRequest): ResponseEntity<TaskResponse>
+            + updateTaskStatus(Long, TaskStatus): ResponseEntity<TaskResponse>
         }
     }
 
@@ -30,10 +30,10 @@ package "Orchestra-Core Monolith (Phase 1)" {
         class CreateWorkspaceRequest {
             - name: String @NotBlank
             - description: String
-            - ownerId: UUID @NotNull
+            - ownerId: Long @NotNull
         }
         class WorkspaceResponse {
-            - id: UUID
+            - id: Long
             - name: String
             - description: String
             - teamsCount: int
@@ -44,7 +44,7 @@ package "Orchestra-Core Monolith (Phase 1)" {
     package "Service Layer (Business Rules & Transactions)" {
         interface WorkspaceService {
             + createWorkspace(CreateWorkspaceRequest): WorkspaceResponse
-            + getWorkspaceById(UUID): WorkspaceResponse
+            + getWorkspaceById(Long): WorkspaceResponse
         }
         
         class WorkspaceServiceImpl implements WorkspaceService {
@@ -57,14 +57,14 @@ package "Orchestra-Core Monolith (Phase 1)" {
 
     package "Domain Persistence Layer (JPA Entities)" {
         class Workspace {
-            - Id: UUID @Id
+            - Id: Long @Id
             - Name: String
             - Description: String
             - Teams: List<Team> @OneToMany
         }
 
         class Team {
-            - Id: UUID @Id
+            - Id: Long @Id
             - Name: String
             - Description: String
             - Employees: List<Employee> @OneToMany
@@ -83,20 +83,20 @@ package "Orchestra-Core Monolith (Phase 1)" {
         }
 
         class Task {
-            - Id: UUID @Id
+            - Id: Long @Id
             - Title: String
             - Description: String
             - Status: Status
             - AssignedTo: Employee @OneToOne
             - creationTime: LocalDateTime
-            - updates: Updates @OneToMany
+            - updates: Updates
         }
 
         class Updates {
-            - Id: UUID @Id
-            - employee: Employee @OneToOne
+            - Id: Long
+            - employee: Employee
             - status: Status
-            - task: Task @ManyToOne
+            - task: Task
             - updateTime: LocalDateTime
         }
 
@@ -130,10 +130,11 @@ package "Orchestra-Core Monolith (Phase 1)" {
         }
     }
 
+
     package "Data Access Layer (Spring Data Repositories)" {
         interface WorkspaceRepository {
             + findByName(String): Optional<WorkspaceEntity>
-            + findWorkspaceWithTeamsAndMembersById(UUID): Optional<WorkspaceEntity>
+            + findWorkspaceWithTeamsAndMembersById(Long): Optional<WorkspaceEntity>
         }
     }
 }
@@ -146,8 +147,5 @@ Team "1" *-- "0..*" Employee : @OneToMany
 Employee --> Role
 Task --> Status
 Task "1" o-- "0..1" Employee : AssignedTo @OneToOne
-Task "1" *-- "0..*" Updates : @OneToMany
-Updates --> Employee
-Updates --> Task
 
 @enduml
