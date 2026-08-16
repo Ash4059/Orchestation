@@ -56,37 +56,77 @@ package "Orchestra-Core Monolith (Phase 1)" {
     }
 
     package "Domain Persistence Layer (JPA Entities)" {
-        class WorkspaceEntity {
-            - id: UUID @Id
-            - name: String
-            - description: String
-            - teams: List<TeamEntity> @OneToMany
-            - createdAt: LocalDateTime
-            - updatedAt: LocalDateTime
+        class Workspace {
+            - Id: UUID @Id
+            - Name: String
+            - Description: String
+            - Teams: List<Team> @OneToMany
         }
 
-        class TeamEntity {
-            - id: UUID @Id
-            - teamName: String
-            - workspace: WorkspaceEntity @ManyToOne
-            - members: Set<UserEntity> @ManyToMany
-            - tasks: List<TaskEntity> @OneToMany
+        class Team {
+            - Id: UUID @Id
+            - Name: String
+            - Description: String
+            - Employees: List<Employee> @OneToMany
+            - workspace: Workspace @ManyToOne
         }
 
-        class TaskEntity {
-            - id: UUID @Id
-            - title: String
-            - storyPoints: Integer
-            - state: TaskState
-            - team: TeamEntity @ManyToOne
+        class Employee {
+            - Id: String @Id
+            - Name: String
+            - Email: String
+            - Password: String
+            - Role: Role
+            - DateOfBirth: LocalDate
+            - DateOfJoining: LocalDate
+            - team: Team @ManyToOne
         }
 
-        enum TaskState {
-            BACKLOG
+        class Task {
+            - Id: UUID @Id
+            - Title: String
+            - Description: String
+            - Status: Status
+            - AssignedTo: Employee @OneToOne
+            - creationTime: LocalDateTime
+            - updates: Updates @OneToMany
+        }
+
+        class Updates {
+            - Id: UUID @Id
+            - employee: Employee @OneToOne
+            - status: Status
+            - task: Task @ManyToOne
+            - updateTime: LocalDateTime
+        }
+
+        enum Role {
+            ADMIN
+            USER
+            MANAGER
+            DEVELOPER
+            SENIOR_DEVELOPER
+            TESTER
+            SENIOR_TESTER
+            DESIGNER
+            SENIOR_DESIGNER
+            MODULE_LEAD
+            PROJECT_MANAGER
+            TEAM_LEAD
+        }
+
+        enum Status {
+            NEW
+            ASSIGNED
             IN_PROGRESS
-            CODE_REVIEW
-            BLOCKED
-            DONE
+            RESOLVED
+            FEEDBACK
+            TESTED_LOCALLY
+            TESTED_ONLINE
+            CLOSED
+            ACKNOWLEDGED
+            REOPENED
+            REJECTED
         }
     }
 
@@ -100,9 +140,14 @@ package "Orchestra-Core Monolith (Phase 1)" {
 
 WorkspaceController --> WorkspaceService
 WorkspaceServiceImpl --> WorkspaceRepository
-WorkspaceServiceImpl --> WorkspaceEntity
-WorkspaceEntity "1" *-- "0..*" TeamEntity : @OneToMany (Cascade.ALL)
-TeamEntity "1" *-- "0..*" TaskEntity : @OneToMany
-TaskEntity --> TaskState
+WorkspaceServiceImpl --> Workspace
+Workspace "1" *-- "0..*" Team : @OneToMany
+Team "1" *-- "0..*" Employee : @OneToMany
+Employee --> Role
+Task --> Status
+Task "1" o-- "0..1" Employee : AssignedTo @OneToOne
+Task "1" *-- "0..*" Updates : @OneToMany
+Updates --> Employee
+Updates --> Task
 
 @enduml
