@@ -1,15 +1,23 @@
 package com.example.orchestation.Entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+@Entity
 public class Updates {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private UUID Id;
+    @Setter(AccessLevel.NONE)
+    @Column(updatable = false, nullable = false)
+    private Long Id;
 
     @OneToOne
     @JoinColumn(name = "employee_id")

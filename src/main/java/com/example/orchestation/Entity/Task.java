@@ -1,26 +1,24 @@
 package com.example.orchestation.Entity;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
+import java.util.List;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
 @Getter
+@Data
 @Entity
 public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
-    private UUID Id;
+    @Column(updatable = false, nullable = false)
+    private Long Id;
 
     private String Title;
 
@@ -29,13 +27,13 @@ public class Task {
     private Status Status;
 
     @OneToOne
-    @Column(name = "user_id", nullable = false)
+    @PrimaryKeyJoinColumn
     private Employee AssignedTo;
 
     private LocalDateTime creationTime;
 
     @OneToMany(mappedBy = "task")
-    private Updates updates;
+    private List<Updates> updates;
 
     @PrePersist
     protected void onCreate() {
