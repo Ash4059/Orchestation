@@ -3,7 +3,7 @@ name: Render PlantUML Diagrams
 on:
   push:
     paths:
-      - 'docs/images/**/*.puml'
+      - 'docs/image/**/*.puml'
   workflow_dispatch:
 
 jobs:
@@ -16,10 +16,25 @@ jobs:
       - name: Checkout Source Code
         uses: actions/checkout@v4
 
-      - name: Render PlantUML to PNG and SVG
-        uses: cloudbees/plantuml-github-action@master
+      - name: Set up Java
+        uses: actions/setup-java@v4
         with:
-          args: -v -tpng -tsvg "docs/images/**/*.puml"
+          distribution: temurin
+          java-version: '17'
+
+      - name: Download PlantUML CLI
+        run: |
+          curl -L -o plantuml.jar https://github.com/plantuml/plantuml/releases/latest/download/plantuml.jar
+
+      - name: Render PlantUML to PNG and SVG
+        run: |
+          mkdir -p docs/images
+          files=$(git ls-files 'docs/image/**/*.puml' || true)
+          if [ -n "$files" ]; then
+            java -jar plantuml.jar -v -tpng -tsvg -o docs/images $files
+          else
+            echo "No .puml files found"
+          fi
 
       - name: Check for Changes
         id: git-check
