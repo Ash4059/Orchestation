@@ -33,7 +33,7 @@ public class Task {
     private LocalDateTime creationTime;
 
     @OneToMany(mappedBy = "task")
-    private List<Updates> updates;
+    private List<TaskUpdate> updates;
 
     @PrePersist
     protected void onCreate() {

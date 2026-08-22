@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Data
 @Entity
-public class Updates {
+public class TaskUpdate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
