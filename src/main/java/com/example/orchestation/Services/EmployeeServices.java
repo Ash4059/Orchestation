@@ -29,7 +29,12 @@ public class EmployeeServices {
     public void updateEmployee(Long id, Employee employee) {
         Employee existingEmployee = findEmployeeById(id);
         if (existingEmployee != null) {
-            employeeRepository.updateEmployee(employee);
+            existingEmployee.setName(employee.getName());
+            existingEmployee.setPassword(employee.getPassword());
+            existingEmployee.setEmail(employee.getEmail());
+            existingEmployee.setRole(employee.getRole());
+            existingEmployee.setDateOfBirth(employee.getDateOfBirth());
+            existingEmployee.setTeam(employee.getTeam());
         }
         else {
             // Handle the case where the employee with the given ID does not exist

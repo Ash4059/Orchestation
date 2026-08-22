@@ -29,7 +29,8 @@ public class TeamServices {
     public void updateTeam(Long id, Team team) {
         Team existingTeam = findTeamById(id);
         if (existingTeam != null) {
-            teamRepository.updateTeam(team);
+            existingTeam.setName(team.getName());
+            existingTeam.setDescription(team.getDescription());
         } else {
             throw new IllegalArgumentException("Team with ID " + id + " not found.");
         }

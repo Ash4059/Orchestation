@@ -29,7 +29,10 @@ public class TaskServices {
     public void updateTask(Long id, Task task) {
         Task existingTask = findTaskById(id);
         if (existingTask != null) {
-            taskRepository.update(task);
+            existingTask.setTitle(task.getTitle());
+            existingTask.setDescription(task.getDescription());
+            existingTask.setStatus(task.getStatus());
+            existingTask.setAssignedTo(task.getAssignedTo());
         } else {
             throw new IllegalArgumentException("Task with ID " + id + " not found.");
         }

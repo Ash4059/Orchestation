@@ -21,10 +21,6 @@ public class TeamRepository {
         return entityManager.find(Team.class, id);
     }
 
-    public void updateTeam(Team team) {
-        entityManager.merge(team);
-    }
-
     public void deleteTeam(Team team) {
         entityManager.remove(team);
     }

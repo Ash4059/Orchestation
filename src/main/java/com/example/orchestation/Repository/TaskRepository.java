@@ -21,10 +21,6 @@ public class TaskRepository {
         return entityManager.find(Task.class, id);
     }
 
-    public void update(Task task) {
-        entityManager.merge(task);
-    }
-
     public void delete(Task task) {
         entityManager.remove(task);
     }

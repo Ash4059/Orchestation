@@ -26,16 +26,6 @@ public class TaskUpdatesServices {
     }
 
     @Transactional
-    public void updateTaskUpdate(Long id, TaskUpdate taskUpdate) {
-        TaskUpdate existingTaskUpdate = findTaskUpdateById(id);
-        if (existingTaskUpdate != null) {
-            taskUpdatesRepository.updateTaskUpdate(taskUpdate);
-        } else {
-            throw new IllegalArgumentException("Task Update with ID " + id + " not found.");
-        }
-    }
-
-    @Transactional
     public void deleteTaskUpdate(Long id) {
         TaskUpdate taskUpdate = findTaskUpdateById(id);
         if (taskUpdate != null) {

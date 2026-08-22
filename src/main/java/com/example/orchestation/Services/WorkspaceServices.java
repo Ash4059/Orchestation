@@ -29,7 +29,8 @@ public class WorkspaceServices {
     public void updateWorkspace(Long id, Workspace workspace) {
         Workspace existingWorkspace = findWorkspaceById(id);
         if (existingWorkspace != null) {
-            workspaceRepository.updateWorkspace(workspace);
+            existingWorkspace.setName(workspace.getName());
+            existingWorkspace.setDescription(workspace.getDescription());
         } else {
             throw new IllegalArgumentException("Workspace with ID " + id + " not found.");
         }

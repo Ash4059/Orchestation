@@ -21,10 +21,6 @@ public class EmployeeRepository {
         return entityManager.find(Employee.class, id);
     }
 
-    public void updateEmployee(Employee employee) {
-        entityManager.merge(employee);
-    }
-
     public void deleteEmployee(Employee employee) {
         entityManager.remove(employee);
     }

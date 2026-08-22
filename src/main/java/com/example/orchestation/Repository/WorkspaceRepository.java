@@ -20,11 +20,7 @@ public class WorkspaceRepository {
     public Workspace findWorkspaceById(Long id) {
         return entityManager.find(Workspace.class, id);
     }
-
-    public void updateWorkspace(Workspace workspace) {
-        entityManager.merge(workspace);
-    }
-
+    
     public void deleteWorkspace(Workspace workspace) {
         entityManager.remove(workspace);
     }
