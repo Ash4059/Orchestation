@@ -9,49 +9,57 @@ package "Orchestra-Core Monolith (Phase 1)" {
 
     package "Presentation Layer (Controllers)" {
         class WorkspaceController {
-            + createWorkspace(CreateWorkspaceRequest): ResponseEntity<WorkspaceResponse>
-            + getWorkspaceById(Long): ResponseEntity<WorkspaceResponse>
-            + updateWorkspace(Long, UpdateWorkspaceRequest): ResponseEntity<WorkspaceResponse>
-            + deleteWorkspace(Long): ResponseEntity<Void>
+            + saveWorkspace(Workspace): ResponseEntity<?>
+            + findWorkspaceById(Long): ResponseEntity<?>
+            + updateWorkspace(Long, Workspace): ResponseEntity<?>
+            + deleteWorkspace(Long): ResponseEntity<?>
         }
 
         class TeamController {
-            + createTeam(Long, CreateTeamRequest): ResponseEntity<TeamResponse>
-            + addMemberToTeam(Long, AddMemberRequest): ResponseEntity<TeamResponse>
+            + saveTeam(Team): ResponseEntity<?>
+            + findTeamById(Long): ResponseEntity<?>
+            + updateTeam(Long, Team): ResponseEntity<?>
+            + deleteTeam(Long): ResponseEntity<?>
         }
 
         class TaskController {
-            + createTask(Long, CreateTaskRequest): ResponseEntity<TaskResponse>
-            + updateTaskStatus(Long, TaskStatus): ResponseEntity<TaskResponse>
+            + saveTask(Task): ResponseEntity<?>
+            + findTaskById(Long): ResponseEntity<?>
+            + updateTask(Long, Task): ResponseEntity<?>
+            + deleteTask(Long): ResponseEntity<?>
         }
-    }
 
-    package "DTO Layer (Request / Response Wrappers)" {
-        class CreateWorkspaceRequest {
-            - name: String @NotBlank
-            - description: String
-            - ownerId: Long @NotNull
-        }
-        class WorkspaceResponse {
-            - id: Long
-            - name: String
-            - description: String
-            - teamsCount: int
-            - createdAt: LocalDateTime
+        class TaskUpdatesController {
+            + saveTaskUpdate(TaskUpdate): ResponseEntity<?>
+            + findUpdatesForTask(Long): ResponseEntity<?>
         }
     }
 
     package "Service Layer (Business Rules & Transactions)" {
-        interface WorkspaceService {
-            + createWorkspace(CreateWorkspaceRequest): WorkspaceResponse
-            + getWorkspaceById(Long): WorkspaceResponse
+        class WorkspaceServices {
+            + saveWorkspace(Workspace): void
+            + findWorkspaceById(Long): Workspace
+            + updateWorkspace(Long, Workspace): void
+            + deleteWorkspace(Long): void
         }
-        
-        class WorkspaceServiceImpl implements WorkspaceService {
-            - workspaceRepository: WorkspaceRepository
-            - userRepository: UserRepository
-            - workspaceMapper: WorkspaceMapper
-            + @Transactional createWorkspace(req): WorkspaceResponse
+
+        class TeamServices {
+            + saveTeam(Team): void
+            + findTeamById(Long): Team
+            + updateTeam(Long, Team): void
+            + deleteTeam(Long): void
+        }
+
+        class TaskServices {
+            + saveTask(Task): void
+            + findTaskById(Long): Task
+            + updateTask(Long, Task): void
+            + deleteTask(Long): void
+        }
+
+        class TaskUpdatesServices {
+            + saveTaskUpdate(TaskUpdate): void
+            + findUpdatesByTaskId(Long): List<TaskUpdate>
         }
     }
 
@@ -60,25 +68,23 @@ package "Orchestra-Core Monolith (Phase 1)" {
             - Id: Long @Id
             - Name: String
             - Description: String
-            - Teams: List<Team> @OneToMany
+            - Teams: List<Team> @OneToMany(mappedBy = "workspace")
         }
 
         class Team {
             - Id: Long @Id
             - Name: String
             - Description: String
-            - Employees: List<Employee> @OneToMany
+            - Employees: List<Employee> @OneToMany(mappedBy = "team")
             - workspace: Workspace @ManyToOne
         }
 
         class Employee {
-            - Id: String @Id
+            - Id: Long @Id
             - Name: String
             - Email: String
             - Password: String
-            - Role: Role
-            - DateOfBirth: LocalDate
-            - DateOfJoining: LocalDate
+            - Role: Status? /* role enum not present as separate class in code */
             - team: Team @ManyToOne
         }
 
@@ -89,30 +95,15 @@ package "Orchestra-Core Monolith (Phase 1)" {
             - Status: Status
             - AssignedTo: Employee @OneToOne
             - creationTime: LocalDateTime
-            - updates: Updates
+            - updates: List<TaskUpdate> @OneToMany(mappedBy = "task")
         }
 
-        class Updates {
+        class TaskUpdate {
             - Id: Long
             - employee: Employee
             - status: Status
             - task: Task
             - updateTime: LocalDateTime
-        }
-
-        enum Role {
-            ADMIN
-            USER
-            MANAGER
-            DEVELOPER
-            SENIOR_DEVELOPER
-            TESTER
-            SENIOR_TESTER
-            DESIGNER
-            SENIOR_DESIGNER
-            MODULE_LEAD
-            PROJECT_MANAGER
-            TEAM_LEAD
         }
 
         enum Status {
@@ -131,21 +122,40 @@ package "Orchestra-Core Monolith (Phase 1)" {
     }
 
 
-    package "Data Access Layer (Spring Data Repositories)" {
-        interface WorkspaceRepository {
-            + findByName(String): Optional<WorkspaceEntity>
-            + findWorkspaceWithTeamsAndMembersById(Long): Optional<WorkspaceEntity>
+    package "Data Access Layer (Repositories)" {
+        class WorkspaceRepository {
+            + saveWorkspace(Workspace): void
+            + findWorkspaceById(Long): Workspace
+            + deleteWorkspace(Workspace): void
+        }
+
+        class TeamRepository {
+            + saveTeam(Team): void
+            + findTeamById(Long): Team
+            + deleteTeam(Team): void
+        }
+
+        class TaskRepository {
+            + saveTask(Task): void
+            + findTaskById(Long): Task
+            + deleteTask(Task): void
+        }
+
+        class TaskUpdatesRepository {
+            + saveTaskUpdate(TaskUpdate): void
+            + findByTaskId(Long): List<TaskUpdate>
         }
     }
 }
 
-WorkspaceController --> WorkspaceService
-WorkspaceServiceImpl --> WorkspaceRepository
-WorkspaceServiceImpl --> Workspace
+WorkspaceController --> WorkspaceServices
+WorkspaceServices --> WorkspaceRepository
+WorkspaceServices --> Workspace
 Workspace "1" *-- "0..*" Team : @OneToMany
 Team "1" *-- "0..*" Employee : @OneToMany
-Employee --> Role
+Employee --> Status
 Task --> Status
 Task "1" o-- "0..1" Employee : AssignedTo @OneToOne
+Task "1" *-- "0..*" TaskUpdate : updates
 
 @enduml
