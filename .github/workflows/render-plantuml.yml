@@ -26,22 +26,30 @@ jobs:
         run: |
           curl -L -o plantuml.jar https://github.com/plantuml/plantuml/releases/latest/download/plantuml.jar
 
-      - name: Render PlantUML to PNG and SVG
+      - name: Render PlantUML to PNG and SVG (next to .puml files)
         run: |
-          mkdir -p docs/images
           files=$(git ls-files 'docs/image/**/*.puml' || true)
-          if [ -n "$files" ]; then
-            java -jar plantuml.jar -v -tpng -tsvg -o docs/images $files
-          else
+          if [ -z "$files" ]; then
             echo "No .puml files found"
+            exit 0
           fi
+
+          # For each .puml file, render PNG and SVG into the same directory as the source
+          for f in $files; do
+            dir=$(dirname "$f")
+            mkdir -p "$dir"
+            echo "Rendering $f -> $dir"
+            java -jar plantuml.jar -tpng -tsvg -o "$dir" "$f"
+          done
 
       - name: Check for Changes
         id: git-check
         run: |
           git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@://github.com"
-          git add docs/images/
+          # Use the official GitHub Actions noreply email for the bot
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Add any generated images next to the .puml files (png/svg)
+          git add docs/image/**/*.png docs/image/**/*.svg || true
           if git diff --staged --quiet; then
             echo "changes=false" >> $GITHUB_OUTPUT
           else
