@@ -15,6 +15,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -36,14 +37,17 @@ public class TaskUpdate {
     @Column(updatable = false, nullable = false)
     private Long Id;
 
+    @NotNull(message = "Update content cannot be null")
     @OneToOne
     @JoinColumn(name = "employee_id")
     private Employee employee;
 
+    @NotNull(message = "Task cannot be null")
     @JsonAlias("status")
     @Enumerated(EnumType.STRING)
     private Status Status;
 
+    @NotNull(message = "Task cannot be null")
     @ManyToOne
     @JoinColumn(name = "task_id")
     private Task task;
