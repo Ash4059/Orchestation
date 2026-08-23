@@ -2,10 +2,10 @@
 
 Here is the current system flow diagram:
 
-![System Flow](docs/images/architecture/system-flow.svg)
+![System Flow](docs/image/architecture/system-flow.svg)
 
 ## Database Schema
 
 Below is the visual database layout:
 
-![Database Schema](docs/images/database/schema.svg)
+![Database Schema](docs/image/database/schema.svg)
