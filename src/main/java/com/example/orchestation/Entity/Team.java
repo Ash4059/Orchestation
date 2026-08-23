@@ -12,8 +12,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -35,13 +33,9 @@ public class Team {
     @Column(updatable = false, nullable = false)
     private Long Id;
 
-    @NotNull(message = "Name cannot be null")
-    @Size(min = 2, max = 50, message = "Name must be between 2 and 50 characters")
     @JsonAlias("name")
     private String Name;
 
-    @NotNull(message = "Description cannot be null")
-    @Size(min = 2, max = 200, message = "Description must be between 2 and 200 characters")
     @JsonAlias("description")
     private String Description;
 
