@@ -1,5 +1,9 @@
 package com.example.orchestation.Controller;
 
+import com.example.orchestation.DTO.TaskInfoDto;
+import com.example.orchestation.DTO.TaskRequestDto;
+import com.example.orchestation.DTO.TaskResponseDto;
+import com.example.orchestation.DTO.TaskUpdateRequestDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,27 +28,27 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<?> saveTask(@RequestBody Task task) {
-        taskServices.saveTask(task);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> saveTask(@RequestBody TaskRequestDto taskRequestDto) {
+        TaskResponseDto taskResponseDto = taskServices.saveTask(taskRequestDto);
+        return ResponseEntity.ok(taskResponseDto);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> findTaskById(@PathVariable Long id) {
-        Task task = taskServices.findTaskById(id);
-        return ResponseEntity.ok(task);
+        TaskInfoDto taskInfoDto = taskServices.findTaskById(id);
+        return ResponseEntity.ok(taskInfoDto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateTask(@PathVariable Long id, @RequestBody Task task) {
-        taskServices.updateTask(id, task);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> updateTask(@PathVariable Long id, @RequestBody TaskRequestDto taskRequestDto) {
+        TaskResponseDto taskResponseDto = taskServices.updateTask(id, taskRequestDto);
+        return ResponseEntity.ok(taskResponseDto);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteTask(@PathVariable Long id) {
-        taskServices.deleteTask(id);
-        return ResponseEntity.ok().build();
+        TaskResponseDto taskResponseDto = taskServices.deleteTask(id);
+        return ResponseEntity.ok(taskResponseDto);
     }
 
 }

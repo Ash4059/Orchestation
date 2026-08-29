@@ -1,5 +1,12 @@
 package com.example.orchestation.Services;
 
+import com.example.orchestation.DTO.TaskInfoDto;
+import com.example.orchestation.DTO.TaskRequestDto;
+import com.example.orchestation.DTO.TaskResponseDto;
+import com.example.orchestation.Entity.Employee;
+import com.example.orchestation.Mapper.TaskMapper;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import com.example.orchestation.Entity.Task;
@@ -7,45 +14,50 @@ import com.example.orchestation.Repository.TaskRepository;
 
 import jakarta.transaction.Transactional;
 
+@RequiredArgsConstructor
 @Service
 public class TaskServices {
 
     private final TaskRepository taskRepository;
+    private final TaskMapper taskMapper;
 
-    public TaskServices(TaskRepository taskRepository){
-        this.taskRepository = taskRepository;
+    private Task getTaskById(Long Id){
+        return taskRepository.findById(Id)
+                .orElseThrow(() -> new EntityNotFoundException("Task not found with Id : " + Id));
     }
 
     @Transactional
-    public void saveTask(Task task) {
-        taskRepository.save(task);
+    public TaskResponseDto saveTask(TaskRequestDto taskRequestDto) {
+        Task saveTask = taskMapper.toEntity(taskRequestDto);
+        taskRepository.save(saveTask);
+        String message = String.format("Task with ID: %s, created successfully!!!", saveTask.getId());
+        return taskMapper.toResponseDto(saveTask, message);
     }
 
-    public Task findTaskById(Long id) {
-        return taskRepository.findById(id);
-    }
-
-    @Transactional
-    public void updateTask(Long id, Task task) {
-        Task existingTask = findTaskById(id);
-        if (existingTask != null) {
-            existingTask.setTitle(task.getTitle());
-            existingTask.setDescription(task.getDescription());
-            existingTask.setStatus(task.getStatus());
-            existingTask.setAssignedTo(task.getAssignedTo());
-        } else {
-            throw new IllegalArgumentException("Task with ID " + id + " not found.");
-        }
+    public TaskInfoDto findTaskById(Long id) {
+        Task task = getTaskById(id);
+        return taskMapper.toDto(task);
     }
 
     @Transactional
-    public void deleteTask(Long id) {
-        Task task = findTaskById(id);
-        if (task != null) {
-            taskRepository.delete(task);
-        } else {
-            throw new IllegalArgumentException("Task with ID " + id + " not found.");
-        }
+    public TaskResponseDto updateTask(Long id, TaskRequestDto taskRequestDto) {
+        Task existingTask = getTaskById(id);
+
+        taskMapper.updateEntityFromDto(taskRequestDto, existingTask);
+
+        //Commit triggers automatic SQL update for changed columns
+        String message = String.format("Task with ID %d updated successfully", id);
+        return taskMapper.toResponseDto(existingTask, message);
+    }
+
+    @Transactional
+    public TaskResponseDto deleteTask(Long id) {
+        Task task = getTaskById(id);
+        taskRepository.delete(task);
+
+        //Commit triggers automatic SQL update for changed columns
+        String message = String.format("Task with ID %d deleted successfully", id);
+        return taskMapper.toResponseDto(task,message);
     }
 
 }

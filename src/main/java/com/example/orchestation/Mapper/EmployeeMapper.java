@@ -20,9 +20,9 @@ public interface EmployeeMapper {
 
     Employee toEntity(CreateEmployeeRequestDto dto);
 
-    Void updateEntityFromDto(UpdateEmployeeRequestDto dto, @MappingTarget Employee employee);
+    void updateEntityFromDto(UpdateEmployeeRequestDto dto, @MappingTarget Employee employee);
 
-    EmployeeResponseDto toResponseDto(Employee employee, String message) {
+    default EmployeeResponseDto toResponseDto(Employee employee, String message) {
         return new EmployeeResponseDto(toDto(employee), message);
     }
 }

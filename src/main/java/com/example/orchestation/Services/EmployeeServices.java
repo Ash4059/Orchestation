@@ -55,7 +55,7 @@ public class EmployeeServices {
     @Transactional
     public EmployeeResponseDto deleteEmployee(Long id) {
         Employee employee = getEmployeeById(id);
-
+        employeeRepository.deleteEmployee(employee);
         //Commit triggers automatic SQL update for changed columns
         String message = String.format("Employee with ID %d deleted successfully", id);
         return employeeMapper.toResponseDto(employee,message);
