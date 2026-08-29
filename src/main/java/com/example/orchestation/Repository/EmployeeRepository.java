@@ -7,6 +7,8 @@ import com.example.orchestation.Entity.Employee;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
+import java.util.Optional;
+
 @Repository
 public class EmployeeRepository {
 
@@ -17,8 +19,8 @@ public class EmployeeRepository {
         entityManager.persist(employee);
     }
 
-    public Employee findEmployeeById(Long id) {
-        return entityManager.find(Employee.class, id);
+    public Optional<Employee> findEmployeeById(Long id) {
+        return Optional.ofNullable(entityManager.find(Employee.class, id));
     }
 
     public void deleteEmployee(Employee employee) {
