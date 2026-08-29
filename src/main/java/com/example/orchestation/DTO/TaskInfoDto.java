@@ -1,5 +1,7 @@
 package com.example.orchestation.DTO;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -11,9 +13,14 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TaskResponseDto {
+public class TaskInfoDto {
     
-    private TaskInfoDto taskInfoDto;
-    private String Message;
+    private Long Id;
+    private String Title;
+    private String Description;
+    private String Status;
+    private String EmployeeName;
+    private List<TaskUpdateResponseDto> updates;
+
 
 }

@@ -1,6 +1,5 @@
 package com.example.orchestation.DTO;
 
-import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,9 +14,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class TaskUpdateResponseDto {
     
-    private Long TaskId;
-    private String Status;
-    private String EmployeeName;
-    private LocalDateTime UpdateTime;
+    private TaskUpdateInfoDto taskUpdateInfoDto;
+    private String message;
 
 }
