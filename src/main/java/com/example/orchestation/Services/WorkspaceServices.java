@@ -38,7 +38,7 @@ public class WorkspaceServices {
 
     @Transactional
     public WorkSpaceResponseDto updateWorkspace(Long id, WorkSpaceRequestDto workSpaceRequestDto) {
-        Workspace workspace = workspaceMapper.toEntity(workSpaceRequestDto);
+        Workspace workspace = getWorkSpaceById(id);
         workspaceMapper.updateEntityFromDto(workSpaceRequestDto, workspace);
 
         //Commit triggers automatic SQL update for changed columns

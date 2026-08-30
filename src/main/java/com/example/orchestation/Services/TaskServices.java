@@ -39,7 +39,6 @@ public class TaskServices {
     @Transactional
     public TaskResponseDto updateTask(Long id, TaskRequestDto taskRequestDto) {
         Task existingTask = getTaskById(id);
-
         taskMapper.updateEntityFromDto(taskRequestDto, existingTask);
 
         //Commit triggers automatic SQL update for changed columns
