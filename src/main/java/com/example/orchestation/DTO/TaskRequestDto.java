@@ -14,12 +14,12 @@ import lombok.Setter;
 @AllArgsConstructor
 public class TaskRequestDto {
     
-    private String Title;
-    private String Description;
+    private String title;
+    private String description;
 
     @EnumValue(enumClass = Status.class, ignoreCase = true)
-    private String Status;
+    private String status;
 
-    private Long EmployeeId;
+    private Long employeeId;
 
 }

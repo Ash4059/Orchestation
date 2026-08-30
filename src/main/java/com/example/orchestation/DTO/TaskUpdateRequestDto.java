@@ -17,12 +17,12 @@ public class TaskUpdateRequestDto {
     
     @NotNull
     @EnumValue(enumClass = Status.class, ignoreCase = true)
-    private String Status;
+    private String status;
 
     @NotNull
-    private Long EmployeeId;
+    private Long employeeId;
 
     @NotNull
-    private Long TaskId;
+    private Long taskId;
 
 }

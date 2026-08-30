@@ -19,15 +19,15 @@ import lombok.Setter;
 public class UpdateEmployeeRequestDto {
     
     @Size(min = 2, max = 50)
-    private String Name;
+    private String name;
 
     @PasswordValidator
-    private String Password;
+    private String password;
 
     @EnumValue(enumClass = Role.class, ignoreCase = true)
-    private String Role;
+    private String role;
 
-    private Long TeamId;
-    private LocalDateTime DateOfBirth;
+    private Long teamId;
+    private LocalDateTime dateOfBirth;
 
 }

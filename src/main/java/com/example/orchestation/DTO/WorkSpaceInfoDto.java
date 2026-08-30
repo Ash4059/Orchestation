@@ -15,9 +15,9 @@ import lombok.Setter;
 @AllArgsConstructor
 public class WorkSpaceInfoDto {
     
-    private Long Id;
-    private String Name;
-    private String Description;
-    private List<String> TeamNames;
+    private Long id;
+    private String name;
+    private String description;
+    private List<String> teamNames;
 
 }

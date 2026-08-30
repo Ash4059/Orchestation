@@ -15,10 +15,10 @@ import lombok.Setter;
 @AllArgsConstructor
 public class TeamInfoDto {
     
-    private Long Id;
-    private String Name;
-    private String Description;
-    private List<String> EmployeeNames;
-    private String WorkSpaceName;
+    private Long id;
+    private String name;
+    private String description;
+    private List<String> employeeNames;
+    private String workSpaceName;
 
 }

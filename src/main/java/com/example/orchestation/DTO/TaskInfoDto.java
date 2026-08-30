@@ -15,11 +15,11 @@ import lombok.Setter;
 @AllArgsConstructor
 public class TaskInfoDto {
     
-    private Long Id;
-    private String Title;
-    private String Description;
-    private String Status;
-    private String EmployeeName;
+    private Long id;
+    private String title;
+    private String description;
+    private String status;
+    private String employeeName;
     private List<TaskUpdateResponseDto> updates;
 
 

@@ -15,11 +15,11 @@ import lombok.Setter;
 @NoArgsConstructor
 public class EmployeeInfoDto {
     
-    private Long Id;
-    private String Name;
-    private String Email;
-    private String Role;
-    private String TeamName;
-    private LocalDateTime DateOfBirth;
+    private Long id;
+    private String name;
+    private String email;
+    private String role;
+    private String teamName;
+    private LocalDateTime dateOfBirth;
 
 }

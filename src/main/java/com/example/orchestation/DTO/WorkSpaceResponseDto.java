@@ -15,6 +15,6 @@ import lombok.Setter;
 public class WorkSpaceResponseDto {
     
     private WorkSpaceInfoDto workSpaceInfoDto;
-    private String Message;
+    private String message;
 
 }

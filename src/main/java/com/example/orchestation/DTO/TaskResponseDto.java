@@ -14,6 +14,6 @@ import lombok.Setter;
 public class TaskResponseDto {
     
     private TaskInfoDto taskInfoDto;
-    private String Message;
+    private String message;
 
 }

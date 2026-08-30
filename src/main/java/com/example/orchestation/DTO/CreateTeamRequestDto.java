@@ -15,12 +15,12 @@ public class CreateTeamRequestDto {
     
     @NotNull
     @Size(min = 2, max = 50)
-    private String Name;
+    private String name;
 
     @NotNull
     @Size(min = 2, max = 200)
-    private String Description;
+    private String description;
 
-    private Long WorkspaceId;
+    private Long workspaceId;
 
 }

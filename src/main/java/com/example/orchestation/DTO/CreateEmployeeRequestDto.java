@@ -22,19 +22,19 @@ public class CreateEmployeeRequestDto {
     
     @NotNull
     @Size(min = 2, max = 50)
-    private String Name;
+    private String name;
 
     @ValidEmail
-    private String Email;
+    private String email;
 
     @PasswordValidator
-    private String Password;
+    private String password;
 
     @NotNull
     @EnumValue(enumClass = Role.class, ignoreCase = true)
-    private String Role;
+    private String role;
 
-    private Long TeamId;
-    private LocalDateTime DateOfBirth;
+    private Long teamId;
+    private LocalDateTime dateOfBirth;
 
 }

@@ -13,7 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class EmployeeResponseDto {
     
-    private EmployeeInfoDto EmployeeInfo;
-    private String Message;
+    private EmployeeInfoDto employeeInfo;
+    private String message;
 
 }

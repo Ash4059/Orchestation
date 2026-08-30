@@ -13,9 +13,9 @@ import lombok.Setter;
 public class UpdateTeamRequestDto {
     
     @Size(min = 2, max = 50)
-    private String Name;
+    private String name;
 
     @Size(min = 2, max = 200)
-    private String Description;
+    private String description;
 
 }

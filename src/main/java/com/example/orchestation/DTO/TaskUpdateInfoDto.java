@@ -15,10 +15,10 @@ import lombok.Setter;
 @AllArgsConstructor
 public class TaskUpdateInfoDto {
     
-    private Long Id;
-    private Long TaskId;
-    private String Status;
-    private String EmployeeName;
-    private LocalDateTime UpdateTime;
+    private Long id;
+    private Long taskId;
+    private String status;
+    private String employeeName;
+    private LocalDateTime updateTime;
 
 }

@@ -14,6 +14,6 @@ import lombok.Setter;
 public class TeamResponseDto {
     
     private TeamInfoDto teamInfoDto;
-    private String Message;
+    private String message;
 
 }
