@@ -9,57 +9,221 @@ package "Orchestra-Core Monolith (Phase 1)" {
 
     package "Presentation Layer (Controllers)" {
         class WorkspaceController {
-            + saveWorkspace(Workspace): ResponseEntity<?>
+            + saveWorkspace(WorkSpaceRequestDto): ResponseEntity<?>
             + findWorkspaceById(Long): ResponseEntity<?>
-            + updateWorkspace(Long, Workspace): ResponseEntity<?>
+            + updateWorkspace(Long, WorkSpaceRequestDto): ResponseEntity<?>
             + deleteWorkspace(Long): ResponseEntity<?>
         }
 
         class TeamController {
-            + saveTeam(Team): ResponseEntity<?>
+            + saveTeam(CreateTeamRequestDto): ResponseEntity<?>
             + findTeamById(Long): ResponseEntity<?>
-            + updateTeam(Long, Team): ResponseEntity<?>
+            + updateTeam(Long, UpdateTeamRequestDto): ResponseEntity<?>
             + deleteTeam(Long): ResponseEntity<?>
         }
 
+        class EmployeeController {
+            + saveEmployee(CreateEmployeeRequestDto): ResponseEntity<?>
+            + findEmployeeById(Long): ResponseEntity<?>
+            + updateEmployee(Long, UpdateEmployeeRequestDto): ResponseEntity<?>
+            + deleteEmployee(Long): ResponseEntity<?>
+        }
+
         class TaskController {
-            + saveTask(Task): ResponseEntity<?>
+            + saveTask(TaskRequestDto): ResponseEntity<?>
             + findTaskById(Long): ResponseEntity<?>
-            + updateTask(Long, Task): ResponseEntity<?>
+            + updateTask(Long, TaskRequestDto): ResponseEntity<?>
             + deleteTask(Long): ResponseEntity<?>
         }
 
         class TaskUpdatesController {
-            + saveTaskUpdate(TaskUpdate): ResponseEntity<?>
+            + saveTaskUpdate(TaskUpdateRequestDto): ResponseEntity<?>
             + findUpdatesForTask(Long): ResponseEntity<?>
+        }
+    }
+
+    package "DTO Layer (Data Transfer Objects)" {
+        class WorkSpaceRequestDto {
+            - Name: String
+            - Description: String
+        }
+
+        class WorkSpaceResponseDto {
+            - workSpaceInfoDto: WorkSpaceInfoDto
+            - Message: String
+        }
+
+        class WorkSpaceInfoDto {
+            - Id: Long
+            - Name: String
+            - Description: String
+        }
+
+        class TeamRequestDto {
+            - Name: String
+            - Description: String
+            - WorkspaceId: Long
+        }
+
+        class CreateTeamRequestDto extends TeamRequestDto {
+        }
+
+        class UpdateTeamRequestDto {
+            - Name: String
+            - Description: String
+        }
+
+        class TeamResponseDto {
+            - teamInfoDto: TeamInfoDto
+            - Message: String
+        }
+
+        class TeamInfoDto {
+            - Id: Long
+            - Name: String
+            - Description: String
+        }
+
+        class CreateEmployeeRequestDto {
+            - Name: String
+            - Email: String
+            - Password: String
+            - Role: String
+            - TeamId: Long
+        }
+
+        class UpdateEmployeeRequestDto {
+            - Name: String
+            - Email: String
+            - Role: String
+        }
+
+        class EmployeeResponseDto {
+            - employeeInfoDto: EmployeeInfoDto
+            - Message: String
+        }
+
+        class EmployeeInfoDto {
+            - Id: Long
+            - Name: String
+            - Email: String
+            - Role: String
+        }
+
+        class TaskRequestDto {
+            - Title: String
+            - Description: String
+            - Status: String
+            - EmployeeId: Long
+        }
+
+        class TaskResponseDto {
+            - taskInfoDto: TaskInfoDto
+            - Message: String
+        }
+
+        class TaskInfoDto {
+            - Id: Long
+            - Title: String
+            - Description: String
+            - Status: String
+        }
+
+        class TaskUpdateRequestDto {
+            - Status: String
+            - EmployeeId: Long
+        }
+
+        class TaskUpdateResponseDto {
+            - taskUpdateInfoDto: TaskUpdateInfoDto
+            - Message: String
+        }
+
+        class TaskUpdateInfoDto {
+            - Id: Long
+            - Status: String
+            - UpdateTime: LocalDateTime
+        }
+    }
+
+    package "Mapper Layer (MapStruct Mappers)" {
+        interface WorkspaceMapper {
+            + toDto(Workspace): WorkSpaceInfoDto
+            + toEntity(WorkSpaceRequestDto): Workspace
+            + updateEntityFromDto(WorkSpaceRequestDto, Workspace): void
+            + toResponseDto(Workspace, String): WorkSpaceResponseDto
+        }
+
+        interface TeamMapper {
+            + toDto(Team): TeamInfoDto
+            + toEntity(TeamRequestDto): Team
+            + updateEntityFromDto(UpdateTeamRequestDto, Team): void
+            + toResponseDto(Team, String): TeamResponseDto
+        }
+
+        interface EmployeeMapper {
+            + toDto(Employee): EmployeeInfoDto
+            + toEntity(CreateEmployeeRequestDto): Employee
+            + updateEntityFromDto(UpdateEmployeeRequestDto, Employee): void
+            + toResponseDto(Employee, String): EmployeeResponseDto
+        }
+
+        interface TaskMapper {
+            + toDto(Task): TaskInfoDto
+            + toEntity(TaskRequestDto): Task
+            + updateEntityFromDto(TaskRequestDto, Task): void
+            + toResponseDto(Task, String): TaskResponseDto
+        }
+
+        interface TaskUpdateMapper {
+            + toDto(TaskUpdate): TaskUpdateInfoDto
+            + toEntity(TaskUpdateRequestDto): TaskUpdate
+            + toResponseDto(TaskUpdate, String): TaskUpdateResponseDto
         }
     }
 
     package "Service Layer (Business Rules & Transactions)" {
         class WorkspaceServices {
-            + saveWorkspace(Workspace): void
-            + findWorkspaceById(Long): Workspace
-            + updateWorkspace(Long, Workspace): void
-            + deleteWorkspace(Long): void
+            - workspaceRepository: WorkspaceRepository
+            - workspaceMapper: WorkspaceMapper
+            + saveWorkspace(WorkSpaceRequestDto): WorkSpaceResponseDto
+            + findWorkspaceById(Long): WorkSpaceInfoDto
+            + updateWorkspace(Long, WorkSpaceRequestDto): WorkSpaceResponseDto
+            + deleteWorkspace(Long): WorkSpaceResponseDto
         }
 
         class TeamServices {
-            + saveTeam(Team): void
-            + findTeamById(Long): Team
-            + updateTeam(Long, Team): void
-            + deleteTeam(Long): void
+            - teamRepository: TeamRepository
+            - teamMapper: TeamMapper
+            + saveTeam(CreateTeamRequestDto): TeamResponseDto
+            + findTeamById(Long): TeamInfoDto
+            + updateTeam(Long, UpdateTeamRequestDto): TeamResponseDto
+            + deleteTeam(Long): TeamResponseDto
+        }
+
+        class EmployeeServices {
+            - employeeRepository: EmployeeRepository
+            - employeeMapper: EmployeeMapper
+            + saveEmployee(CreateEmployeeRequestDto): EmployeeResponseDto
+            + findEmployeeById(Long): EmployeeInfoDto
+            + updateEmployee(Long, UpdateEmployeeRequestDto): EmployeeResponseDto
+            + deleteEmployee(Long): EmployeeResponseDto
         }
 
         class TaskServices {
-            + saveTask(Task): void
-            + findTaskById(Long): Task
-            + updateTask(Long, Task): void
-            + deleteTask(Long): void
+            - taskRepository: TaskRepository
+            - taskMapper: TaskMapper
+            + saveTask(TaskRequestDto): TaskResponseDto
+            + findTaskById(Long): TaskInfoDto
+            + updateTask(Long, TaskRequestDto): TaskResponseDto
+            + deleteTask(Long): TaskResponseDto
         }
 
         class TaskUpdatesServices {
-            + saveTaskUpdate(TaskUpdate): void
-            + findUpdatesByTaskId(Long): List<TaskUpdate>
+            - taskUpdatesRepository: TaskUpdatesRepository
+            - taskUpdateMapper: TaskUpdateMapper
+            + saveTaskUpdate(TaskUpdateRequestDto): TaskUpdateResponseDto
+            + findUpdatesByTaskId(Long): List<TaskUpdateInfoDto>
         }
     }
 
@@ -84,7 +248,7 @@ package "Orchestra-Core Monolith (Phase 1)" {
             - Name: String
             - Email: String
             - Password: String
-            - Role: Status? /* role enum not present as separate class in code */
+            - Role: Role
             - team: Team @ManyToOne
         }
 
@@ -99,10 +263,10 @@ package "Orchestra-Core Monolith (Phase 1)" {
         }
 
         class TaskUpdate {
-            - Id: Long
-            - employee: Employee
+            - Id: Long @Id
+            - employee: Employee @ManyToOne
             - status: Status
-            - task: Task
+            - task: Task @ManyToOne
             - updateTime: LocalDateTime
         }
 
@@ -119,43 +283,120 @@ package "Orchestra-Core Monolith (Phase 1)" {
             REOPENED
             REJECTED
         }
+
+        enum Role {
+            ADMIN
+            MANAGER
+            DEVELOPER
+            TESTER
+            VIEWER
+        }
     }
 
-
     package "Data Access Layer (Repositories)" {
-        class WorkspaceRepository {
-            + saveWorkspace(Workspace): void
-            + findWorkspaceById(Long): Workspace
-            + deleteWorkspace(Workspace): void
+        interface WorkspaceRepository {
+            + save(Workspace): Workspace
+            + findById(Long): Optional<Workspace>
+            + delete(Workspace): void
         }
 
-        class TeamRepository {
-            + saveTeam(Team): void
-            + findTeamById(Long): Team
-            + deleteTeam(Team): void
+        interface TeamRepository {
+            + save(Team): Team
+            + findById(Long): Optional<Team>
+            + delete(Team): void
         }
 
-        class TaskRepository {
-            + saveTask(Task): void
-            + findTaskById(Long): Task
-            + deleteTask(Task): void
+        interface EmployeeRepository {
+            + save(Employee): Employee
+            + findById(Long): Optional<Employee>
+            + delete(Employee): void
         }
 
-        class TaskUpdatesRepository {
-            + saveTaskUpdate(TaskUpdate): void
+        interface TaskRepository {
+            + save(Task): Task
+            + findById(Long): Optional<Task>
+            + delete(Task): void
+        }
+
+        interface TaskUpdatesRepository {
+            + save(TaskUpdate): TaskUpdate
             + findByTaskId(Long): List<TaskUpdate>
         }
     }
 }
 
+' Controller to DTO relationships
+WorkspaceController --> WorkSpaceRequestDto
+WorkspaceController --> WorkSpaceResponseDto
+WorkspaceController --> WorkSpaceInfoDto
+
+TeamController --> CreateTeamRequestDto
+TeamController --> UpdateTeamRequestDto
+TeamController --> TeamResponseDto
+TeamController --> TeamInfoDto
+
+EmployeeController --> CreateEmployeeRequestDto
+EmployeeController --> UpdateEmployeeRequestDto
+EmployeeController --> EmployeeResponseDto
+EmployeeController --> EmployeeInfoDto
+
+TaskController --> TaskRequestDto
+TaskController --> TaskResponseDto
+TaskController --> TaskInfoDto
+
+TaskUpdatesController --> TaskUpdateRequestDto
+TaskUpdatesController --> TaskUpdateResponseDto
+TaskUpdatesController --> TaskUpdateInfoDto
+
+' Controller to Service relationships
 WorkspaceController --> WorkspaceServices
+TeamController --> TeamServices
+EmployeeController --> EmployeeServices
+TaskController --> TaskServices
+TaskUpdatesController --> TaskUpdatesServices
+
+' Service to Mapper relationships
+WorkspaceServices --> WorkspaceMapper
+TeamServices --> TeamMapper
+EmployeeServices --> EmployeeMapper
+TaskServices --> TaskMapper
+TaskUpdatesServices --> TaskUpdateMapper
+
+' Mapper to DTO and Entity relationships
+WorkspaceMapper --> WorkSpaceInfoDto
+WorkspaceMapper --> WorkSpaceRequestDto
+WorkspaceMapper --> Workspace
+
+TeamMapper --> TeamInfoDto
+TeamMapper --> TeamRequestDto
+TeamMapper --> Team
+
+EmployeeMapper --> EmployeeInfoDto
+EmployeeMapper --> CreateEmployeeRequestDto
+EmployeeMapper --> Employee
+
+TaskMapper --> TaskInfoDto
+TaskMapper --> TaskRequestDto
+TaskMapper --> Task
+
+TaskUpdateMapper --> TaskUpdateInfoDto
+TaskUpdateMapper --> TaskUpdateRequestDto
+TaskUpdateMapper --> TaskUpdate
+
+' Service to Repository relationships
 WorkspaceServices --> WorkspaceRepository
-WorkspaceServices --> Workspace
+TeamServices --> TeamRepository
+EmployeeServices --> EmployeeRepository
+TaskServices --> TaskRepository
+TaskUpdatesServices --> TaskUpdatesRepository
+
+' Entity relationships
 Workspace "1" *-- "0..*" Team : @OneToMany
 Team "1" *-- "0..*" Employee : @OneToMany
-Employee --> Status
+Employee --> Role
+Employee "1" o-- "0..*" Task : Assigned
 Task --> Status
-Task "1" o-- "0..1" Employee : AssignedTo @OneToOne
 Task "1" *-- "0..*" TaskUpdate : updates
+TaskUpdate --> Status
 
 @enduml
