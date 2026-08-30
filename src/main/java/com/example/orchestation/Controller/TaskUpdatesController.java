@@ -1,43 +1,37 @@
 package com.example.orchestation.Controller;
 
+import com.example.orchestation.DTO.TaskUpdateInfoDto;
+import com.example.orchestation.DTO.TaskUpdateRequestDto;
+import com.example.orchestation.DTO.TaskUpdateResponseDto;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.example.orchestation.Entity.TaskUpdate;
 import com.example.orchestation.Services.TaskUpdatesServices;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/task/updates")
 public class TaskUpdatesController {
 
     private final TaskUpdatesServices taskUpdatesService;
 
-    public TaskUpdatesController(TaskUpdatesServices taskUpdatesService) {
-        this.taskUpdatesService = taskUpdatesService;
-    }
-
     @GetMapping("/{taskId}")
     public ResponseEntity<?> getTaskUpdates(@PathVariable Long taskId) {
-        TaskUpdate taskUpdate = taskUpdatesService.findTaskUpdateById(taskId);
+        TaskUpdateInfoDto taskUpdate = taskUpdatesService.findTaskUpdateById(taskId);
         return ResponseEntity.ok(taskUpdate);
     }
 
     @PostMapping
-    public ResponseEntity<?> saveTaskUpdate(@RequestBody TaskUpdate taskUpdate) {
-        taskUpdatesService.saveTaskUpdate(taskUpdate);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> saveTaskUpdate(@RequestBody TaskUpdateRequestDto taskUpdateRequestDto) {
+        TaskUpdateResponseDto taskUpdateResponseDto = taskUpdatesService.saveTaskUpdate(taskUpdateRequestDto);
+        return ResponseEntity.ok(taskUpdateResponseDto);
     }
 
-    @DeleteMapping("/{taskId}")
-    public ResponseEntity<?> deleteTaskUpdate(@PathVariable Long taskId) {
-        taskUpdatesService.deleteTaskUpdate(taskId);
-        return ResponseEntity.ok().build();
+    @DeleteMapping("/{taskUpdateId}")
+    public ResponseEntity<?> deleteTaskUpdate(@PathVariable Long taskUpdateId) {
+        TaskUpdateResponseDto taskUpdateResponseDto = taskUpdatesService.deleteTaskUpdate(taskUpdateId);
+        return ResponseEntity.ok(taskUpdateResponseDto);
     }
 
 }

@@ -3,8 +3,6 @@ package com.example.orchestation.Mapper;
 import com.example.orchestation.DTO.TaskInfoDto;
 import com.example.orchestation.DTO.TaskRequestDto;
 import com.example.orchestation.DTO.TaskResponseDto;
-import com.example.orchestation.DTO.UpdateEmployeeRequestDto;
-import com.example.orchestation.Entity.Employee;
 import com.example.orchestation.Entity.Task;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;

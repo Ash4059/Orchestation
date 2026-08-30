@@ -7,6 +7,8 @@ import com.example.orchestation.Entity.Team;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
+import java.util.Optional;
+
 @Repository
 public class TeamRepository {
 
@@ -17,8 +19,8 @@ public class TeamRepository {
         entityManager.persist(team);
     }
 
-    public Team findTeamById(Long id) {
-        return entityManager.find(Team.class, id);
+    public Optional<Team> findTeamById(Long id) {
+        return Optional.ofNullable(entityManager.find(Team.class, id));
     }
 
     public void deleteTeam(Team team) {

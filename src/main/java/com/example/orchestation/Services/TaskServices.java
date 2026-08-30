@@ -3,16 +3,13 @@ package com.example.orchestation.Services;
 import com.example.orchestation.DTO.TaskInfoDto;
 import com.example.orchestation.DTO.TaskRequestDto;
 import com.example.orchestation.DTO.TaskResponseDto;
-import com.example.orchestation.Entity.Employee;
+import com.example.orchestation.Entity.Task;
 import com.example.orchestation.Mapper.TaskMapper;
+import com.example.orchestation.Repository.TaskRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import com.example.orchestation.Entity.Task;
-import com.example.orchestation.Repository.TaskRepository;
-
-import jakarta.transaction.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -21,7 +18,7 @@ public class TaskServices {
     private final TaskRepository taskRepository;
     private final TaskMapper taskMapper;
 
-    private Task getTaskById(Long Id){
+    private Task getTaskById(Long Id) {
         return taskRepository.findById(Id)
                 .orElseThrow(() -> new EntityNotFoundException("Task not found with Id : " + Id));
     }
@@ -57,7 +54,7 @@ public class TaskServices {
 
         //Commit triggers automatic SQL update for changed columns
         String message = String.format("Task with ID %d deleted successfully", id);
-        return taskMapper.toResponseDto(task,message);
+        return taskMapper.toResponseDto(task, message);
     }
 
 }

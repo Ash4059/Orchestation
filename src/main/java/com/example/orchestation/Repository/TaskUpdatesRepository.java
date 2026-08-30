@@ -7,6 +7,8 @@ import com.example.orchestation.Entity.TaskUpdate;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
+import java.util.Optional;
+
 @Repository
 public class TaskUpdatesRepository {
 
@@ -17,8 +19,8 @@ public class TaskUpdatesRepository {
         entityManager.persist(taskUpdate);
     }
 
-    public TaskUpdate findTaskUpdateById(Long id) {
-        return entityManager.find(TaskUpdate.class, id);
+    public Optional<TaskUpdate> findTaskUpdateById(Long id) {
+        return Optional.ofNullable(entityManager.find(TaskUpdate.class, id));
     }
 
     public void deleteTaskUpdate(TaskUpdate taskUpdate) {

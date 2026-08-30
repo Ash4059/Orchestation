@@ -1,49 +1,59 @@
 package com.example.orchestation.Services;
 
+import com.example.orchestation.DTO.WorkSpaceInfoDto;
+import com.example.orchestation.DTO.WorkSpaceRequestDto;
+import com.example.orchestation.DTO.WorkSpaceResponseDto;
+import com.example.orchestation.Entity.Workspace;
+import com.example.orchestation.Mapper.WorkspaceMapper;
+import com.example.orchestation.Repository.WorkspaceRepository;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import com.example.orchestation.Entity.Workspace;
-import com.example.orchestation.Repository.WorkspaceRepository;
-
-import jakarta.transaction.Transactional;
-
+@RequiredArgsConstructor
 @Service
 public class WorkspaceServices {
 
     private final WorkspaceRepository workspaceRepository;
+    private final WorkspaceMapper workspaceMapper;
 
-    public WorkspaceServices(WorkspaceRepository workspaceRepository){
-        this.workspaceRepository = workspaceRepository;
+    private Workspace getWorkSpaceById(Long Id) {
+        return workspaceRepository.findWorkspaceById(Id)
+                .orElseThrow(() -> new EntityNotFoundException("Workspace not found with Id: " + Id));
     }
 
     @Transactional
-    public void saveWorkspace(Workspace workspace) {
+    public WorkSpaceResponseDto saveWorkspace(WorkSpaceRequestDto workSpaceRequestDto) {
+        Workspace workspace = workspaceMapper.toEntity(workSpaceRequestDto);
         workspaceRepository.saveWorkspace(workspace);
+        String message = String.format("Task with ID: %s, created successfully!!!", workspace.getId());
+        return workspaceMapper.toResponseDto(workspace, message);
     }
 
-    public Workspace findWorkspaceById(Long id) {
-        return workspaceRepository.findWorkspaceById(id);
-    }
-
-    @Transactional
-    public void updateWorkspace(Long id, Workspace workspace) {
-        Workspace existingWorkspace = findWorkspaceById(id);
-        if (existingWorkspace != null) {
-            existingWorkspace.setName(workspace.getName());
-            existingWorkspace.setDescription(workspace.getDescription());
-        } else {
-            throw new IllegalArgumentException("Workspace with ID " + id + " not found.");
-        }
+    public WorkSpaceInfoDto findWorkspaceById(Long id) {
+        Workspace workspace = getWorkSpaceById(id);
+        return workspaceMapper.toDto(workspace);
     }
 
     @Transactional
-    public void deleteWorkspace(Long id) {
-        Workspace workspace = findWorkspaceById(id);
-        if (workspace != null) {
-            workspaceRepository.deleteWorkspace(workspace);
-        } else {
-            throw new IllegalArgumentException("Workspace with ID " + id + " not found.");
-        }
+    public WorkSpaceResponseDto updateWorkspace(Long id, WorkSpaceRequestDto workSpaceRequestDto) {
+        Workspace workspace = workspaceMapper.toEntity(workSpaceRequestDto);
+        workspaceMapper.updateEntityFromDto(workSpaceRequestDto, workspace);
+
+        //Commit triggers automatic SQL update for changed columns
+        String message = String.format("Workspace with ID %d updated successfully", id);
+        return workspaceMapper.toResponseDto(workspace, message);
+    }
+
+    @Transactional
+    public WorkSpaceResponseDto deleteWorkspace(Long id) {
+        Workspace workspace = getWorkSpaceById(id);
+        workspaceRepository.deleteWorkspace(workspace);
+
+        //Commit triggers automatic SQL update for changed columns
+        String message = String.format("Team with ID %d deleted successfully", id);
+        return workspaceMapper.toResponseDto(workspace, message);
     }
 
 }

@@ -1,5 +1,10 @@
 package com.example.orchestation.Controller;
 
+import com.example.orchestation.DTO.CreateTeamRequestDto;
+import com.example.orchestation.DTO.TeamInfoDto;
+import com.example.orchestation.DTO.TeamResponseDto;
+import com.example.orchestation.DTO.UpdateTeamRequestDto;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,38 +18,36 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.orchestation.Entity.Team;
 import com.example.orchestation.Services.TeamServices;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/team")
 public class TeamController {
 
     private final TeamServices teamServices;
 
-    public TeamController(TeamServices teamServices) {
-        this.teamServices = teamServices;
-    }
 
     @PostMapping
-    public ResponseEntity<?> saveTeam(@RequestBody Team team) {
-        teamServices.saveTeam(team);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> saveTeam(@RequestBody CreateTeamRequestDto createTeamRequestDto) {
+        TeamResponseDto dto = teamServices.saveTeam(createTeamRequestDto);
+        return ResponseEntity.ok(dto);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> findTeamById(@PathVariable Long id) {
-        Team team = teamServices.findTeamById(id);
-        return ResponseEntity.ok(team);
+        TeamInfoDto teamInfoDto = teamServices.findTeamById(id);
+        return ResponseEntity.ok(teamInfoDto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateTeam(@PathVariable Long id, @RequestBody Team team) {
-        teamServices.updateTeam(id, team);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> updateTeam(@PathVariable Long id, @RequestBody UpdateTeamRequestDto updateTeamRequestDto) {
+        TeamResponseDto teamResponseDto = teamServices.updateTeam(id, updateTeamRequestDto);
+        return ResponseEntity.ok(teamResponseDto);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteTeam(@PathVariable Long id) {
-        teamServices.deleteTeam(id);
-        return ResponseEntity.ok().build();
+        TeamResponseDto teamResponseDto = teamServices.deleteTeam(id);
+        return ResponseEntity.ok(teamResponseDto);
     }
 
 }

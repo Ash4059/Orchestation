@@ -7,6 +7,8 @@ import com.example.orchestation.Entity.Workspace;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
+import java.util.Optional;
+
 @Repository
 public class WorkspaceRepository {
 
@@ -17,8 +19,8 @@ public class WorkspaceRepository {
         entityManager.persist(workspace);
     }
 
-    public Workspace findWorkspaceById(Long id) {
-        return entityManager.find(Workspace.class, id);
+    public Optional<Workspace> findWorkspaceById(Long id) {
+        return Optional.ofNullable(entityManager.find(Workspace.class, id));
     }
     
     public void deleteWorkspace(Workspace workspace) {
