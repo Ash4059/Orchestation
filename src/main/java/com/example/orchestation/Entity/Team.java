@@ -40,7 +40,7 @@ public class Team {
     private String Description;
 
     @OneToMany(mappedBy = "team")
-    private List<Employee> Employees;
+    private List<Employee> employees;
 
     @ManyToOne
     @JoinColumn(name = "workspace_id")

@@ -21,7 +21,7 @@ public abstract class TeamMapper {
     private WorkspaceRepository workspaceRepository;
 
     @Mapping(target = "workSpaceName", source = "workspace.name")
-    @Mapping(target = "employeeNames", source = "Employees")
+    @Mapping(target = "employeeNames", source = "employees")
     public abstract TeamInfoDto toDto(Team team);
 
     @Mapping(target = "workspace", source = "workspaceId")
