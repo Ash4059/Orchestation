@@ -37,6 +37,7 @@ public class TaskUpdatesServices {
         return taskUpdateMapper.toResponseDto(taskUpdate, message);
     }
 
+    @Transactional
     public TaskUpdateResponseDto taskUpdateUpdate(Long id, TaskUpdateRequestDto dto) {
         TaskUpdate existingTaskUpdate = getTaskUpdateById(id);
         taskUpdateMapper.updateEntityFromDto(dto, existingTaskUpdate);

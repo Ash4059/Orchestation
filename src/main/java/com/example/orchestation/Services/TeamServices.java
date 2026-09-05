@@ -30,7 +30,7 @@ public class TeamServices {
     public TeamResponseDto saveTeam(CreateTeamRequestDto teamRequestDto) {
         Team team = teamMapper.toEntity(teamRequestDto);
         teamRepository.saveTeam(team);
-        String message = String.format("Task with ID: %s, created successfully!!!", team.getId());
+        String message = String.format("Team with ID: %s, created successfully!!!", team.getId());
         return teamMapper.toResponseDto(team, message);
     }
 
