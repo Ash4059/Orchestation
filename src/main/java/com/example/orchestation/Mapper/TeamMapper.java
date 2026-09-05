@@ -1,27 +1,53 @@
 package com.example.orchestation.Mapper;
 
 import com.example.orchestation.DTO.*;
+import com.example.orchestation.Entity.Employee;
 import com.example.orchestation.Entity.Team;
+import com.example.orchestation.Entity.Workspace;
+import com.example.orchestation.Repository.WorkspaceRepository;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Mapper(
         componentModel = "spring",
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
 )
-public interface TeamMapper {
+public abstract class TeamMapper {
 
-    TeamInfoDto toDto(Team team);
+    @Autowired
+    private WorkspaceRepository workspaceRepository;
 
-    Team toEntity(CreateTeamRequestDto dto);
+    @Mapping(target = "workSpaceName", source = "workspace.name")
+    @Mapping(target = "employeeNames", source = "Employees")
+    public abstract TeamInfoDto toDto(Team team);
 
-    Team toEntity(UpdateTeamRequestDto dto);
+    @Mapping(target = "workspace", source = "workspaceId")
+    public abstract Team toEntity(CreateTeamRequestDto dto);
 
-    void updateEntityFromDto(UpdateTeamRequestDto dto, @MappingTarget Team team);
+    public abstract Team toEntity(UpdateTeamRequestDto dto);
 
-    default TeamResponseDto toResponseDto(Team team, String message) {
+    public abstract void updateEntityFromDto(UpdateTeamRequestDto dto, @MappingTarget Team team);
+
+    public TeamResponseDto toResponseDto(Team team, String message) {
         return new TeamResponseDto(toDto(team), message);
+    }
+
+    public Workspace mapWorkspaceIdToWorkspace(Long workspaceId){
+        if(workspaceId == null){
+            return  null;
+        }
+        return workspaceRepository.findWorkspaceById(workspaceId)
+                .get();
+    }
+
+    public String mapEmployeeToEmployeeName(Employee employee){
+        if(employee == null){
+            return "";
+        }
+        return employee.getName();
     }
 
 }

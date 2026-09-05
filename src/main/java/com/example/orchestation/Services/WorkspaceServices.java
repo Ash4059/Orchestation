@@ -27,7 +27,7 @@ public class WorkspaceServices {
     public WorkSpaceResponseDto saveWorkspace(WorkSpaceRequestDto workSpaceRequestDto) {
         Workspace workspace = workspaceMapper.toEntity(workSpaceRequestDto);
         workspaceRepository.saveWorkspace(workspace);
-        String message = String.format("Task with ID: %s, created successfully!!!", workspace.getId());
+        String message = String.format("WorkSpace with ID: %s, created successfully!!!", workspace.getId());
         return workspaceMapper.toResponseDto(workspace, message);
     }
 
@@ -52,7 +52,7 @@ public class WorkspaceServices {
         workspaceRepository.deleteWorkspace(workspace);
 
         //Commit triggers automatic SQL update for changed columns
-        String message = String.format("Team with ID %d deleted successfully", id);
+        String message = String.format("Workspace with ID %d deleted successfully", id);
         return workspaceMapper.toResponseDto(workspace, message);
     }
 

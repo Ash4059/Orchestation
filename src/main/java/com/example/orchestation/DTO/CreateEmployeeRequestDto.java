@@ -34,7 +34,9 @@ public class CreateEmployeeRequestDto {
     @EnumValue(enumClass = Role.class, ignoreCase = true)
     private String role;
 
+    @NotNull
     private Long teamId;
+    
     private LocalDateTime dateOfBirth;
 
 }
