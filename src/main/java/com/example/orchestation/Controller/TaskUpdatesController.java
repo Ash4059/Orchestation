@@ -28,6 +28,15 @@ public class TaskUpdatesController {
         return ResponseEntity.ok(taskUpdateResponseDto);
     }
 
+    @PutMapping("/{taskUpdateId}")
+    public ResponseEntity<?> updateTaskUpdate(
+            @PathVariable Long taskUpdateId,
+            @RequestBody TaskUpdateRequestDto taskUpdateRequestDto) {
+        TaskUpdateResponseDto taskUpdateResponseDto =
+                taskUpdatesService.taskUpdateUpdate(taskUpdateId, taskUpdateRequestDto);
+        return ResponseEntity.ok(taskUpdateResponseDto);
+    }
+
     @DeleteMapping("/{taskUpdateId}")
     public ResponseEntity<?> deleteTaskUpdate(@PathVariable Long taskUpdateId) {
         TaskUpdateResponseDto taskUpdateResponseDto = taskUpdatesService.deleteTaskUpdate(taskUpdateId);

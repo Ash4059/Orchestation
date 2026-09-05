@@ -10,6 +10,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.persistence.EntityNotFoundException;
 
 @Mapper(
         componentModel = "spring",
@@ -40,7 +41,7 @@ public abstract class TeamMapper {
             return  null;
         }
         return workspaceRepository.findWorkspaceById(workspaceId)
-                .get();
+                .orElseThrow(() -> new EntityNotFoundException("Workspace not found with ID: " + workspaceId));
     }
 
     public String mapEmployeeToEmployeeName(Employee employee){
