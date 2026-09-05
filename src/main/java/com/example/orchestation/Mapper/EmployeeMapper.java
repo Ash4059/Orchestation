@@ -9,15 +9,13 @@ import com.example.orchestation.Entity.Role;
 import com.example.orchestation.Entity.Team;
 import com.example.orchestation.Repository.TeamRepository;
 import jakarta.persistence.EntityNotFoundException;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Mapper(
         componentModel = "spring",
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+        nullValueMappingStrategy = NullValueMappingStrategy.RETURN_DEFAULT
 )
 public abstract class EmployeeMapper {
 

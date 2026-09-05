@@ -11,15 +11,13 @@ import com.example.orchestation.Entity.Task;
 import com.example.orchestation.Entity.TaskUpdate;
 import com.example.orchestation.Repository.EmployeeRepository;
 import jakarta.persistence.EntityNotFoundException;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Mapper(
         componentModel = "spring",
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+        nullValueMappingStrategy = NullValueMappingStrategy.RETURN_DEFAULT
 )
 public abstract class TaskMapper {
 

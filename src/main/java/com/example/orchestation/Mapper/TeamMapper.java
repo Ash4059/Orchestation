@@ -5,16 +5,14 @@ import com.example.orchestation.Entity.Employee;
 import com.example.orchestation.Entity.Team;
 import com.example.orchestation.Entity.Workspace;
 import com.example.orchestation.Repository.WorkspaceRepository;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.persistence.EntityNotFoundException;
 
 @Mapper(
         componentModel = "spring",
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+        nullValueMappingStrategy = NullValueMappingStrategy.RETURN_DEFAULT
 )
 public abstract class TeamMapper {
 

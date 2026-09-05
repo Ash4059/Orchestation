@@ -7,14 +7,13 @@ import com.example.orchestation.Entity.Workspace;
 import com.example.orchestation.Entity.Team;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
+
+import org.mapstruct.*;
 
 @Mapper(
         componentModel = "spring",
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+        nullValueMappingStrategy = NullValueMappingStrategy.RETURN_DEFAULT
 )
 public interface WorkspaceMapper {
 
