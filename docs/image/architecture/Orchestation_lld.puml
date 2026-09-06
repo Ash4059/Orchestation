@@ -37,8 +37,10 @@ package "Orchestra-Core Monolith (Phase 1)" {
         }
 
         class TaskUpdatesController {
+            + getTaskUpdates(Long): ResponseEntity<?>
             + saveTaskUpdate(TaskUpdateRequestDto): ResponseEntity<?>
-            + findUpdatesForTask(Long): ResponseEntity<?>
+            + updateTaskUpdate(Long, TaskUpdateRequestDto): ResponseEntity<?>
+            + deleteTaskUpdate(Long): ResponseEntity<?>
         }
     }
 
@@ -59,13 +61,10 @@ package "Orchestra-Core Monolith (Phase 1)" {
             - Description: String
         }
 
-        class TeamRequestDto {
+        class CreateTeamRequestDto {
             - Name: String
             - Description: String
             - WorkspaceId: Long
-        }
-
-        class CreateTeamRequestDto extends TeamRequestDto {
         }
 
         class UpdateTeamRequestDto {
@@ -108,6 +107,8 @@ package "Orchestra-Core Monolith (Phase 1)" {
             - Name: String
             - Email: String
             - Role: String
+            - DateOfBirth: LocalDate
+            - DateOfJoining: LocalDate
         }
 
         class TaskRequestDto {
@@ -144,6 +145,19 @@ package "Orchestra-Core Monolith (Phase 1)" {
             - Status: String
             - UpdateTime: LocalDateTime
         }
+
+        class ErrorResponseDto {
+            - timestamp: LocalDateTime
+            - statusCode: int
+            - message: String
+            - error: String
+            - path: String
+        }
+
+        class FieldErrorResponseDto extends ErrorResponseDto {
+            - errorResponseDto: ErrorResponseDto
+            - fieldErrors: Map<String, String>
+        }
     }
 
     package "Mapper Layer (MapStruct Mappers)" {
@@ -156,7 +170,8 @@ package "Orchestra-Core Monolith (Phase 1)" {
 
         interface TeamMapper {
             + toDto(Team): TeamInfoDto
-            + toEntity(TeamRequestDto): Team
+            + toEntity(CreateTeamRequestDto): Team
+            + toEntity(UpdateTeamRequestDto): Team
             + updateEntityFromDto(UpdateTeamRequestDto, Team): void
             + toResponseDto(Team, String): TeamResponseDto
         }
@@ -223,7 +238,9 @@ package "Orchestra-Core Monolith (Phase 1)" {
             - taskUpdatesRepository: TaskUpdatesRepository
             - taskUpdateMapper: TaskUpdateMapper
             + saveTaskUpdate(TaskUpdateRequestDto): TaskUpdateResponseDto
-            + findUpdatesByTaskId(Long): List<TaskUpdateInfoDto>
+            + findTaskUpdateById(Long): TaskUpdateInfoDto
+            + taskUpdateUpdate(Long, TaskUpdateRequestDto): TaskUpdateResponseDto
+            + deleteTaskUpdate(Long): TaskUpdateResponseDto
         }
     }
 
@@ -249,6 +266,8 @@ package "Orchestra-Core Monolith (Phase 1)" {
             - Email: String
             - Password: String
             - Role: Role
+            - DateOfBirth: LocalDate
+            - DateOfJoining: LocalDate
             - team: Team @ManyToOne
         }
 
@@ -264,7 +283,7 @@ package "Orchestra-Core Monolith (Phase 1)" {
 
         class TaskUpdate {
             - Id: Long @Id
-            - employee: Employee @ManyToOne
+            - employee: Employee @OneToOne
             - status: Status
             - task: Task @ManyToOne
             - updateTime: LocalDateTime
@@ -294,34 +313,63 @@ package "Orchestra-Core Monolith (Phase 1)" {
     }
 
     package "Data Access Layer (Repositories)" {
-        interface WorkspaceRepository {
-            + save(Workspace): Workspace
-            + findById(Long): Optional<Workspace>
-            + delete(Workspace): void
+        class WorkspaceRepository {
+            + saveWorkspace(Workspace): void
+            + findWorkspaceById(Long): Optional<Workspace>
+            + deleteWorkspace(Workspace): void
         }
 
-        interface TeamRepository {
-            + save(Team): Team
-            + findById(Long): Optional<Team>
-            + delete(Team): void
+        class TeamRepository {
+            + saveTeam(Team): void
+            + findTeamById(Long): Optional<Team>
+            + deleteTeam(Team): void
         }
 
-        interface EmployeeRepository {
-            + save(Employee): Employee
-            + findById(Long): Optional<Employee>
-            + delete(Employee): void
+        class EmployeeRepository {
+            + saveEmployee(Employee): void
+            + findEmployeeById(Long): Optional<Employee>
+            + deleteEmployee(Employee): void
         }
 
-        interface TaskRepository {
-            + save(Task): Task
+        class TaskRepository {
+            + save(Task): void
             + findById(Long): Optional<Task>
             + delete(Task): void
         }
 
-        interface TaskUpdatesRepository {
-            + save(TaskUpdate): TaskUpdate
-            + findByTaskId(Long): List<TaskUpdate>
+        class TaskUpdatesRepository {
+            + saveTaskUpdate(TaskUpdate): void
+            + findTaskUpdateById(Long): Optional<TaskUpdate>
+            + deleteTaskUpdate(TaskUpdate): void
         }
+    }
+
+    package "Cross-Cutting Components" {
+        class GlobalMappingValidationAspect {
+            - smartValidator: SmartValidator
+            + ValidateRequests(JoinPoint): void
+        }
+
+        class GlobalExceptionHandler {
+            + handleEntityNotFoundException(...): ResponseEntity
+            + handleVaidationException(...): ResponseEntity
+            + handleMessageNotReadableException(...): ResponseEntity
+            + handleMethodArgumentTypeMismatch(...): ResponseEntity
+            + handleDuplicateKKeyException(...): ResponseEntity
+            + handleException(...): ResponseEntity
+        }
+    }
+
+    package "Validation Components" {
+        class AdultValidator
+        class AdultValidatorImpl
+        class EmailValidator
+        class EnumUtils
+        class EnumValue
+        class EnumValueValidator
+        class PasswordStrengthValidator
+        class PasswordValidator
+        class ValidEmail
     }
 }
 
@@ -368,7 +416,8 @@ WorkspaceMapper --> WorkSpaceRequestDto
 WorkspaceMapper --> Workspace
 
 TeamMapper --> TeamInfoDto
-TeamMapper --> TeamRequestDto
+TeamMapper --> CreateTeamRequestDto
+TeamMapper --> UpdateTeamRequestDto
 TeamMapper --> Team
 
 EmployeeMapper --> EmployeeInfoDto
@@ -391,12 +440,24 @@ TaskServices --> TaskRepository
 TaskUpdatesServices --> TaskUpdatesRepository
 
 ' Entity relationships
-Workspace "1" *-- "0..*" Team : @OneToMany
-Team "1" *-- "0..*" Employee : @OneToMany
+Workspace "1" *-- "0..*" Team : @OneToMany(mappedBy="workspace")
+Team "1" *-- "0..*" Employee : @OneToMany(mappedBy="team")
+Team "*" --> "1" Workspace : @ManyToOne
+Employee "*" --> "1" Team : @ManyToOne
 Employee --> Role
-Employee "1" o-- "0..*" Task : Assigned
+Task "0..*" --> "1" Employee : @OneToOne AssignedTo
 Task --> Status
 Task "1" *-- "0..*" TaskUpdate : updates
 TaskUpdate --> Status
+TaskUpdate "*" --> "1" Employee : @OneToOne
+TaskUpdate "*" --> "1" Task : @ManyToOne
+
+' Cross-cutting relationships
+GlobalMappingValidationAspect ..> GlobalExceptionHandler : validation errors
+GlobalExceptionHandler ..> ErrorResponseDto
+GlobalExceptionHandler ..> FieldErrorResponseDto
+EmployeeMapper ..> ValidEmail
+EmployeeMapper ..> PasswordValidator
+EmployeeMapper ..> EnumValue
 
 @enduml
