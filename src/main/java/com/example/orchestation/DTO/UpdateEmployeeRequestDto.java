@@ -2,7 +2,10 @@ package com.example.orchestation.DTO;
 
 import java.time.LocalDateTime;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import com.example.orchestation.Entity.Role;
+import com.example.orchestation.Validation.AdultValidator;
 import com.example.orchestation.Validation.EnumValue;
 import com.example.orchestation.Validation.PasswordValidator;
 
@@ -18,7 +21,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UpdateEmployeeRequestDto {
     
-    @Size(min = 2, max = 50)
+    @Size(min = 2, max = 50, message = "Name must be between 2 and 50 characters")
     private String name;
 
     @PasswordValidator
@@ -28,6 +31,9 @@ public class UpdateEmployeeRequestDto {
     private String role;
 
     private Long teamId;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd", iso=DateTimeFormat.ISO.DATE)
+    @AdultValidator 
     private LocalDateTime dateOfBirth;
 
 }

@@ -15,14 +15,13 @@ import lombok.Setter;
 @AllArgsConstructor
 public class TaskUpdateRequestDto {
     
-    @NotNull
     @EnumValue(enumClass = Status.class, ignoreCase = true)
     private String status;
 
-    @NotNull
+    @NotNull(message = "Employee ID cannot be null")
     private Long employeeId;
 
-    @NotNull
+    @NotNull(message = "Task ID cannot be null")
     private Long taskId;
 
 }

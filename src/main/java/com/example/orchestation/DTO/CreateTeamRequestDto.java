@@ -13,14 +13,15 @@ import lombok.Setter;
 @AllArgsConstructor
 public class CreateTeamRequestDto {
     
-    @NotNull
-    @Size(min = 2, max = 50)
+    @NotNull(message = "Name cannot be null")
+    @Size(min = 2, max = 50, message = "Name must be between 2 and 50 characters")
     private String name;
 
-    @NotNull
-    @Size(min = 2, max = 200)
+    @NotNull(message = "Description cannot be null")
+    @Size(min = 2, max = 200, message = "Description must be between 2 and 200 characters")
     private String description;
 
+    @NotNull(message = "Workspace ID cannot be null")
     private Long workspaceId;
 
 }

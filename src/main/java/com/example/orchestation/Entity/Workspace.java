@@ -32,6 +32,7 @@ public class Workspace {
     private Long Id;
     
     @JsonAlias("name")
+    @Column(unique = true, nullable = false)
     private String Name;
 
     @JsonAlias("description")

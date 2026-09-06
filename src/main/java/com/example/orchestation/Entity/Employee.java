@@ -39,6 +39,7 @@ public class Employee {
     private String Name;
 
     @JsonAlias("email")
+    @Column(unique = true, nullable = false)
     private String Email;
 
     @JsonAlias("password")

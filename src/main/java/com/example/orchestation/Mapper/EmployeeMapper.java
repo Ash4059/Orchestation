@@ -1,5 +1,7 @@
 package com.example.orchestation.Mapper;
 
+import java.util.function.Supplier;
+
 import com.example.orchestation.DTO.CreateEmployeeRequestDto;
 import com.example.orchestation.DTO.EmployeeInfoDto;
 import com.example.orchestation.DTO.EmployeeResponseDto;
@@ -8,6 +10,7 @@ import com.example.orchestation.Entity.Employee;
 import com.example.orchestation.Entity.Role;
 import com.example.orchestation.Entity.Team;
 import com.example.orchestation.Repository.TeamRepository;
+
 import jakarta.persistence.EntityNotFoundException;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +43,12 @@ public abstract class EmployeeMapper {
             return null;
         }
         return teamRepository.findTeamById(teamId)
-                .orElseThrow(() -> new EntityNotFoundException("Team not found with ID: " + teamId));
+                .orElseThrow(new Supplier<RuntimeException>() {
+            @Override
+            public RuntimeException get() {
+                return new EntityNotFoundException("Team not found with ID: " + teamId);
+            }
+        });
     }
 
     protected Role mapRole(String role) {

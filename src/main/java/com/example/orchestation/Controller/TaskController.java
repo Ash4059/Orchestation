@@ -1,9 +1,5 @@
 package com.example.orchestation.Controller;
 
-import com.example.orchestation.DTO.TaskInfoDto;
-import com.example.orchestation.DTO.TaskRequestDto;
-import com.example.orchestation.DTO.TaskResponseDto;
-import com.example.orchestation.DTO.TaskUpdateRequestDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +10,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.orchestation.Entity.Task;
+import com.example.orchestation.DTO.TaskInfoDto;
+import com.example.orchestation.DTO.TaskRequestDto;
+import com.example.orchestation.DTO.TaskResponseDto;
 import com.example.orchestation.Services.TaskServices;
 
 @RestController

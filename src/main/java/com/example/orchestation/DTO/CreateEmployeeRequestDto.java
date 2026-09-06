@@ -2,7 +2,10 @@ package com.example.orchestation.DTO;
 
 import java.time.LocalDate;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import com.example.orchestation.Entity.Role;
+import com.example.orchestation.Validation.AdultValidator;
 import com.example.orchestation.Validation.EnumValue;
 import com.example.orchestation.Validation.PasswordValidator;
 import com.example.orchestation.Validation.ValidEmail;
@@ -20,23 +23,27 @@ import lombok.Setter;
 @AllArgsConstructor
 public class CreateEmployeeRequestDto {
     
-    @NotNull
-    @Size(min = 2, max = 50)
+    @NotNull(message = "Name cannot be null")
+    @Size(min = 2, max = 50, message = "Name must be between 2 and 50 characters")
     private String name;
 
+    @NotNull (message = "Email cannot be null")
     @ValidEmail
     private String email;
 
+    @NotNull (message = "Password cannot be null")
     @PasswordValidator
     private String password;
 
-    @NotNull
     @EnumValue(enumClass = Role.class, ignoreCase = true)
     private String role;
 
-    @NotNull
+    @NotNull(message = "Team ID cannot be null")
     private Long teamId;
     
+    @NotNull (message = "Date of Birth cannot be null")
+    @DateTimeFormat(pattern = "yyyy-MM-dd", iso=DateTimeFormat.ISO.DATE)
+    @AdultValidator
     private LocalDate dateOfBirth;
 
 }

@@ -22,8 +22,9 @@ public class GlobalMappingValidationAspect {
 
     private final SmartValidator smartValidator;
 
-    // Intercepts any method annotated with @PostMapping in your controllers
-    @Before("@annotation(org.springframework.web.bind.annotation.PostMapping)")
+    // Intercepts any method annotated with @PostMapping or PutMapping in your controllers
+    @Before("@annotation(org.springframework.web.bind.annotation.PostMapping) || "
+         + "@annotation(org.springframework.web.bind.annotation.PutMapping)")
     public void ValidateRequests(JoinPoint joinPoint) throws Throwable {
 
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
