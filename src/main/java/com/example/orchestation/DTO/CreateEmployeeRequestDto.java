@@ -1,6 +1,6 @@
 package com.example.orchestation.DTO;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import com.example.orchestation.Entity.Role;
 import com.example.orchestation.Validation.EnumValue;
@@ -37,6 +37,6 @@ public class CreateEmployeeRequestDto {
     @NotNull
     private Long teamId;
     
-    private LocalDateTime dateOfBirth;
+    private LocalDate dateOfBirth;
 
 }
