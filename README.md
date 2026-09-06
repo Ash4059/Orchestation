@@ -2,7 +2,7 @@
 
 Here is the current system flow diagram:
 
-![System Flow](docs/image/architecture/system-flow.svg)
+![System Flow](docs/image/architecture/Orchestra_Core_Phase1_LLD.png)
 
 ## Database Schema
 
