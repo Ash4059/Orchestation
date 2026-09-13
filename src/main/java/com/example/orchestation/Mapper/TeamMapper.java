@@ -39,7 +39,7 @@ public abstract class TeamMapper {
         if(workspaceId == null){
             return  null;
         }
-        return workspaceRepository.findWorkspaceById(workspaceId)
+        return workspaceRepository.findById(workspaceId)
                 .orElseThrow(() -> new EntityNotFoundException("Workspace not found with ID: " + workspaceId));
     }
 

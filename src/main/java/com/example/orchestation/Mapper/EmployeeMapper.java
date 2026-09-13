@@ -42,7 +42,7 @@ public abstract class EmployeeMapper {
         if (teamId == null) {
             return null;
         }
-        return teamRepository.findTeamById(teamId)
+        return teamRepository.findById(teamId)
                 .orElseThrow(new Supplier<RuntimeException>() {
             @Override
             public RuntimeException get() {

@@ -42,7 +42,7 @@ public abstract class TaskMapper {
         if (employeeId == null) {
             return null;
         }
-        return employeeRepository.findEmployeeById(employeeId)
+        return employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new EntityNotFoundException("Employee not found with ID: " + employeeId));
     }
 
