@@ -23,7 +23,7 @@ public class EmployeeServices {
     private final EmployeeMapper employeeMapper;
 
     private Employee getEmployeeById(Long Id) {
-        return employeeRepository.findEmployeeById(Id)
+        return employeeRepository.findById(Id)
                 .orElseThrow(() -> new EntityNotFoundException("Employee not found with ID: " + Id));
     }
 
@@ -35,7 +35,7 @@ public class EmployeeServices {
     @Transactional
     public EmployeeResponseDto saveEmployee(CreateEmployeeRequestDto employeeDto) {
         Employee saveEmployee = employeeMapper.toEntity(employeeDto);
-        employeeRepository.saveEmployee(saveEmployee);
+        employeeRepository.save(saveEmployee);
         String message = String.format("Employee with user ID: %s, created successfully!!!", saveEmployee.getId());
         return employeeMapper.toResponseDto(saveEmployee, message);
 
@@ -54,7 +54,7 @@ public class EmployeeServices {
     @Transactional
     public EmployeeResponseDto deleteEmployee(Long id) {
         Employee employee = getEmployeeById(id);
-        employeeRepository.deleteEmployee(employee);
+        employeeRepository.delete(employee);
 
         //Commit triggers automatic SQL update for changed columns
         String message = String.format("Employee with ID %d deleted successfully", id);

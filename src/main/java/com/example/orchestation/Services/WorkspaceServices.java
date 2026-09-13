@@ -21,14 +21,14 @@ public class WorkspaceServices {
     private final WorkspaceMapper workspaceMapper;
 
     private Workspace getWorkSpaceById(Long Id) {
-        return workspaceRepository.findWorkspaceById(Id)
+        return workspaceRepository.findById(Id)
                 .orElseThrow(() -> new EntityNotFoundException("Workspace not found with Id: " + Id));
     }
 
     @Transactional
     public WorkSpaceResponseDto saveWorkspace(WorkSpaceRequestDto workSpaceRequestDto) {
         Workspace workspace = workspaceMapper.toEntity(workSpaceRequestDto);
-        workspaceRepository.saveWorkspace(workspace);
+        workspaceRepository.save(workspace);
         String message = String.format("WorkSpace with ID: %s, created successfully!!!", workspace.getId());
         return workspaceMapper.toResponseDto(workspace, message);
     }
@@ -51,7 +51,7 @@ public class WorkspaceServices {
     @Transactional
     public WorkSpaceResponseDto deleteWorkspace(Long id) {
         Workspace workspace = getWorkSpaceById(id);
-        workspaceRepository.deleteWorkspace(workspace);
+        workspaceRepository.delete(workspace);
 
         //Commit triggers automatic SQL update for changed columns
         String message = String.format("Workspace with ID %d deleted successfully", id);

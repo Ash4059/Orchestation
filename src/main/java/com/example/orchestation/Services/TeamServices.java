@@ -22,14 +22,14 @@ public class TeamServices {
     private final TeamMapper teamMapper;
 
     private Team getTeamById(Long Id){
-        return teamRepository.findTeamById(Id)
+        return teamRepository.findById(Id)
                 .orElseThrow(() -> new EntityNotFoundException("Team not found with Id : " + Id));
     }
 
     @Transactional
     public TeamResponseDto saveTeam(CreateTeamRequestDto teamRequestDto) {
         Team team = teamMapper.toEntity(teamRequestDto);
-        teamRepository.saveTeam(team);
+        teamRepository.save(team);
         String message = String.format("Team with ID: %s, created successfully!!!", team.getId());
         return teamMapper.toResponseDto(team, message);
     }
@@ -52,7 +52,7 @@ public class TeamServices {
     @Transactional
     public TeamResponseDto deleteTeam(Long id) {
         Team team = getTeamById(id);
-        teamRepository.deleteTeam(team);
+        teamRepository.delete(team);
 
         //Commit triggers automatic SQL update for changed columns
         String message = String.format("Team with ID %d deleted successfully", id);

@@ -21,7 +21,7 @@ public class TaskUpdatesServices {
     private final TaskUpdateMapper taskUpdateMapper;
 
     private TaskUpdate getTaskUpdateById(Long Id){
-        return taskUpdatesRepository.findTaskUpdateById(Id)
+        return taskUpdatesRepository.findById(Id)
                 .orElseThrow(() -> new EntityNotFoundException("TaskUpdate not found with Id : " + Id));
     }
 
@@ -33,7 +33,7 @@ public class TaskUpdatesServices {
     @Transactional
     public TaskUpdateResponseDto saveTaskUpdate(TaskUpdateRequestDto taskUpdateRequestDto) {
         TaskUpdate taskUpdate = taskUpdateMapper.toEntity(taskUpdateRequestDto);
-        taskUpdatesRepository.saveTaskUpdate(taskUpdate);
+        taskUpdatesRepository.save(taskUpdate);
 
         String message = String.format("Task with ID: %s, created successfully!!!", taskUpdate.getId());
         return taskUpdateMapper.toResponseDto(taskUpdate, message);
@@ -52,7 +52,7 @@ public class TaskUpdatesServices {
     @Transactional
     public TaskUpdateResponseDto deleteTaskUpdate(Long id) {
         TaskUpdate taskUpdate = getTaskUpdateById(id);
-        taskUpdatesRepository.deleteTaskUpdate(taskUpdate);
+        taskUpdatesRepository.delete(taskUpdate);
 
         //Commit triggers automatic SQL update for changed columns
         String message = String.format("TaskUpdate with ID %d deleted successfully", id);
