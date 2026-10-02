@@ -11,7 +11,7 @@ import com.example.orchestation.Entity.Team;
 import com.example.orchestation.Mapper.TeamMapper;
 import com.example.orchestation.Repository.TeamRepository;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -34,6 +34,7 @@ public class TeamServices {
         return teamMapper.toResponseDto(team, message);
     }
 
+    @Transactional(readOnly = true)
     public TeamInfoDto findTeamById(Long id) {
         Team team = getTeamById(id);
         return teamMapper.toDto(team);

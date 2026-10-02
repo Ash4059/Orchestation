@@ -10,7 +10,7 @@ import com.example.orchestation.Entity.TaskUpdate;
 import com.example.orchestation.Mapper.TaskUpdateMapper;
 import com.example.orchestation.Repository.TaskUpdatesRepository;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -25,6 +25,7 @@ public class TaskUpdatesServices {
                 .orElseThrow(() -> new EntityNotFoundException("TaskUpdate not found with Id : " + Id));
     }
 
+    @Transactional(readOnly = true)
     public TaskUpdateInfoDto findTaskUpdateById(Long Id){
         TaskUpdate taskUpdate = getTaskUpdateById(Id);
         return taskUpdateMapper.toDto(taskUpdate);

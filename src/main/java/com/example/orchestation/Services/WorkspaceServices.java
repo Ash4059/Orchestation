@@ -10,7 +10,7 @@ import com.example.orchestation.Entity.Workspace;
 import com.example.orchestation.Mapper.WorkspaceMapper;
 import com.example.orchestation.Repository.WorkspaceRepository;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -33,6 +33,7 @@ public class WorkspaceServices {
         return workspaceMapper.toResponseDto(workspace, message);
     }
 
+    @Transactional(readOnly = true)
     public WorkSpaceInfoDto findWorkspaceById(Long id) {
         Workspace workspace = getWorkSpaceById(id);
         return workspaceMapper.toDto(workspace);

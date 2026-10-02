@@ -10,7 +10,7 @@ import com.example.orchestation.Entity.Task;
 import com.example.orchestation.Mapper.TaskMapper;
 import com.example.orchestation.Repository.TaskRepository;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -33,6 +33,7 @@ public class TaskServices {
         return taskMapper.toResponseDto(saveTask, message);
     }
 
+    @Transactional(readOnly = true)
     public TaskInfoDto findTaskById(Long id) {
         Task task = getTaskById(id);
         return taskMapper.toDto(task);

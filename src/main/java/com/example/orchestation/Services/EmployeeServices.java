@@ -11,7 +11,7 @@ import com.example.orchestation.Entity.Employee;
 import com.example.orchestation.Mapper.EmployeeMapper;
 import com.example.orchestation.Repository.EmployeeRepository;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 
 
@@ -27,6 +27,7 @@ public class EmployeeServices {
                 .orElseThrow(() -> new EntityNotFoundException("Employee not found with ID: " + Id));
     }
 
+    @Transactional(readOnly = true)
     public EmployeeInfoDto findEmployeeById(Long id) {
         Employee employee = getEmployeeById(id);
         return employeeMapper.toDto(employee);
