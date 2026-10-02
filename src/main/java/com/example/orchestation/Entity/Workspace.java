@@ -1,18 +1,13 @@
 package com.example.orchestation.Entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,7 +16,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-@Data
 @Entity
 public class Workspace {
 
@@ -29,15 +23,38 @@ public class Workspace {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
     @Column(updatable = false, nullable = false)
-    private Long Id;
+    private Long id;
     
     @JsonAlias("name")
     @Column(unique = true, nullable = false)
-    private String Name;
+    private String name;
 
     @JsonAlias("description")
-    private String Description;
+    private String description;
 
-    @OneToMany(mappedBy = "workspace")
-    private List<Team> Teams;
+    @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Team> teams = new ArrayList<>();
+
+    @OneToMany(mappedBy = "workspace", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<Employee> employees = new ArrayList<>();
+
+    public void addTeam(Team team) {
+        teams.add(team);
+        team.setWorkspace(this);
+    }
+
+    public void removeTeam(Team team) {
+        teams.remove(team);
+        team.setWorkspace(null);
+    }
+
+    public void addEmployee(Employee employee) {
+        employees.add(employee);
+        employee.setWorkspace(this);
+    }
+
+    public void removeEmployee(Employee employee) {
+        employees.remove(employee);
+        employee.setWorkspace(null);
+    }
 }

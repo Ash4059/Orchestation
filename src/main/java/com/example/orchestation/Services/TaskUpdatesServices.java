@@ -20,13 +20,13 @@ public class TaskUpdatesServices {
     private final TaskUpdatesRepository taskUpdatesRepository;
     private final TaskUpdateMapper taskUpdateMapper;
 
-    private TaskUpdate getTaskUpdateById(Long Id){
+    private TaskUpdate getTaskUpdateById(Long Id) {
         return taskUpdatesRepository.findById(Id)
                 .orElseThrow(() -> new EntityNotFoundException("TaskUpdate not found with Id : " + Id));
     }
 
     @Transactional(readOnly = true)
-    public TaskUpdateInfoDto findTaskUpdateById(Long Id){
+    public TaskUpdateInfoDto findTaskUpdateById(Long Id) {
         TaskUpdate taskUpdate = getTaskUpdateById(Id);
         return taskUpdateMapper.toDto(taskUpdate);
     }
@@ -45,7 +45,7 @@ public class TaskUpdatesServices {
         TaskUpdate existingTaskUpdate = getTaskUpdateById(id);
         taskUpdateMapper.updateEntityFromDto(dto, existingTaskUpdate);
 
-        //Commit triggers automatic SQL update for changed columns
+        // Commit triggers automatic SQL update for changed columns
         String message = String.format("TaskUpdate with ID %d updated successfully", id);
         return taskUpdateMapper.toResponseDto(existingTaskUpdate, message);
     }
@@ -55,7 +55,7 @@ public class TaskUpdatesServices {
         TaskUpdate taskUpdate = getTaskUpdateById(id);
         taskUpdatesRepository.delete(taskUpdate);
 
-        //Commit triggers automatic SQL update for changed columns
+        // Commit triggers automatic SQL update for changed columns
         String message = String.format("TaskUpdate with ID %d deleted successfully", id);
         return taskUpdateMapper.toResponseDto(taskUpdate, message);
     }

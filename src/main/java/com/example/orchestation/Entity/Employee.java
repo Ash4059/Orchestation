@@ -8,6 +8,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -16,7 +17,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,7 +25,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-@Data
 @Entity
 public class Employee {
 
@@ -33,33 +32,37 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
     @Column(updatable = false, nullable = false)
-    private Long Id;
+    private Long id;
 
     @JsonAlias("name")
-    private String Name;
+    private String name;
 
     @JsonAlias("email")
     @Column(unique = true, nullable = false)
-    private String Email;
+    private String email;
 
     @JsonAlias("password")
-    private String Password;
+    private String password;
 
     @JsonAlias("role")
     @Enumerated(EnumType.STRING)
-    private Role Role;
+    private Role role;
 
     @JsonAlias("date_of_birth")
-    private LocalDate DateOfBirth;
+    private LocalDate dateOfBirth;
 
-    private LocalDate DateOfJoining;
+    private LocalDate dateOfJoining;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
     private Team team;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "workspace_id")
+    private Workspace workspace;
+
     @PrePersist
     private void onCreate() {
-        this.DateOfJoining = LocalDate.now();
+        this.dateOfJoining = LocalDate.now();
     }
 }

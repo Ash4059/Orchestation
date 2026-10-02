@@ -53,6 +53,9 @@ public class TeamServices {
     @Transactional
     public TeamResponseDto deleteTeam(Long id) {
         Team team = getTeamById(id);
+        if (team.getEmployees() != null) {
+            team.getEmployees().forEach(employee -> employee.setTeam(null));
+        }
         teamRepository.delete(team);
 
         //Commit triggers automatic SQL update for changed columns

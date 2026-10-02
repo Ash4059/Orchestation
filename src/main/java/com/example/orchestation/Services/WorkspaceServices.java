@@ -52,6 +52,16 @@ public class WorkspaceServices {
     @Transactional
     public WorkSpaceResponseDto deleteWorkspace(Long id) {
         Workspace workspace = getWorkSpaceById(id);
+        if (workspace.getEmployees() != null) {
+            workspace.getEmployees().forEach(employee -> employee.setWorkspace(null));
+        }
+        if (workspace.getTeams() != null) {
+            workspace.getTeams().forEach(team -> {
+                if (team.getEmployees() != null) {
+                    team.getEmployees().forEach(employee -> employee.setTeam(null));
+                }
+            });
+        }
         workspaceRepository.delete(workspace);
 
         //Commit triggers automatic SQL update for changed columns

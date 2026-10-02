@@ -1,24 +1,14 @@
 package com.example.orchestation.Entity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PrimaryKeyJoinColumn;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,7 +17,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @Setter
 @Getter
-@Data
 @Entity
 public class Task {
 
@@ -35,29 +24,39 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
     @Column(updatable = false, nullable = false)
-    private Long Id;
+    private Long id;
 
     @JsonAlias("title")
-    private String Title;
+    private String title;
 
     @JsonAlias("description")
-    private String Description;
+    private String description;
 
     @JsonAlias("status")
     @Enumerated(EnumType.STRING)
-    private Status Status;
+    private Status status;
 
-    @OneToOne
-    @PrimaryKeyJoinColumn
-    private Employee AssignedTo;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "employee_id")
+    private Employee assignedTo;
 
     private LocalDateTime creationTime;
 
-    @OneToMany(mappedBy = "task")
-    private List<TaskUpdate> updates;
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TaskUpdate> updates = new ArrayList<>();
 
     @PrePersist
     protected void onCreate() {
         this.creationTime = LocalDateTime.now();
+    }
+
+    public void addUpdate(TaskUpdate update) {
+        updates.add(update);
+        update.setTask(this);
+    }
+
+    public void removeUpdate(TaskUpdate update) {
+        updates.remove(update);
+        update.setTask(null);
     }
 }
