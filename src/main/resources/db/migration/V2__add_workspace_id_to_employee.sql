@@ -1,2 +1,2 @@
 ALTER TABLE employee
-    ADD COLUMN workspace_id BIGINT REFERENCES workspace(id);
+    ADD COLUMN IF NOT EXISTS workspace_id BIGINT REFERENCES workspace(id);
