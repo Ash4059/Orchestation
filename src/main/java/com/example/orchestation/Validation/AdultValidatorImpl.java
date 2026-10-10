@@ -16,5 +16,4 @@ public class AdultValidatorImpl implements ConstraintValidator<AdultValidator, L
         LocalDate adultDate = today.minusYears(18);
         return !dateOfBirth.isAfter(adultDate);
     }
-    
 }
