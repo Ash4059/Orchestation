@@ -28,8 +28,21 @@ public class EnumValueValidator implements ConstraintValidator<EnumValue, String
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
         // If the value is null or empty, let service decide itself
-        if (value == null || value.trim().isEmpty()) return true;
+        if (value == null || value.trim().isEmpty()) {
+            return true;
+        }
+
         String v = this.ignoreCase ? value.toLowerCase() : value;
-        return acceptedValues.contains(v);
+        boolean isValid = acceptedValues.contains(v);
+
+        // ADD THIS BLOCK: Modify the context if the value is invalid
+        if (!isValid) {
+            context.disableDefaultConstraintViolation();
+            context.buildConstraintViolationWithTemplate(
+                            "Invalid value. Accepted values are: " + acceptedValues)
+                    .addConstraintViolation();
+        }
+
+        return isValid;
     }
 }
